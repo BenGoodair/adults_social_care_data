@@ -14,5 +14,13 @@ options(scipen=999)
 
 ####ASC-FR - activity####
 
+####Step 1: identify outsourced activity for home care, nursing care; residential care
+#### most recent files only have it super disaggregated
+#### older files have: home care hours by LA/indy; residential care by LA/ indy; 
+####new files have no funding type break down; older files do ffs
 
+
+#As I see it variables to construct are: activity in house % for: home care, nursing care; residential care 2005-2022
+
+#LFG!!!
 
