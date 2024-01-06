@@ -55,7 +55,63 @@ asc23 <- asc23 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
   dplyr::select(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting ,ITEMVALUE)%>%
   dplyr::group_by(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting )%>%
   dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, GEOGRAPHY_CODE, SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision == "99"]*100) %>%
   dplyr::ungroup()
   
+asc22 <- asc22 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
+                                 DimensionGroup=="Activity")%>%
+  dplyr::mutate(ITEMVALUE = as.numeric(ITEMVALUE))%>%
+  dplyr::select(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting ,ITEMVALUE)%>%
+  dplyr::group_by(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting )%>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, GEOGRAPHY_CODE, SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision == "99"]*100) %>%
+  dplyr::ungroup()
 
+asc21 <- asc21 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
+                                 DimensionGroup=="Activity")%>%
+  dplyr::mutate(ITEMVALUE = as.numeric(ITEMVALUE))%>%
+  dplyr::select(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting ,ITEMVALUE)%>%
+  dplyr::group_by(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting )%>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, GEOGRAPHY_CODE, SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision == "99"]*100) %>%
+  dplyr::ungroup()
+
+asc20 <- asc20 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
+                                 DimensionGroup=="Activity")%>%
+  dplyr::mutate(ITEMVALUE = as.numeric(ITEMVALUE))%>%
+  dplyr::select(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting ,ITEMVALUE)%>%
+  dplyr::group_by(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting )%>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, GEOGRAPHY_CODE, SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision == "99"]*100) %>%
+  dplyr::ungroup()
+
+asc19 <- asc19 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
+                                 DimensionGroup=="Activity")%>%
+  dplyr::mutate(ITEMVALUE = as.numeric(ITEMVALUE))%>%
+  dplyr::select(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision_Key, SupportSetting_Key ,ITEMVALUE)%>%
+  dplyr::group_by(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision_Key, SupportSetting_Key )%>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, GEOGRAPHY_CODE, SupportSetting_Key) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision_Key == "99"]*100) %>%
+  dplyr::ungroup()
+
+asc18 <- asc18 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
+                                 DimensionGroup=="Activity")%>%
+  dplyr::mutate(ITEMVALUE = as.numeric(ITEMVALUE))%>%
+  dplyr::select(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision_Key, SupportSetting_Key ,ITEMVALUE)%>%
+  dplyr::group_by(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision_Key, SupportSetting_Key )%>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, GEOGRAPHY_CODE, SupportSetting_Key) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision_Key == "99"]*100) %>%
+  dplyr::ungroup()
 
