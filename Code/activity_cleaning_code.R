@@ -36,15 +36,19 @@ asc18 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_soci
 
 asc17 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2017/CSV%20ASCFR%20Activity.csv"))
 asc16 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2016/pss-exp-eng-15-16-fin-act.csv"))
-asc15 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2015/pss-exp-eng-14-15-fin-coun-lev-act-data.csv"), skip=1)
+asc15 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2015/pss-exp-eng-14-15-fin-coun-lev-act-data.csv"), 
+                  skip=1,colClasses = "character")
 
 
 
-asc14 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2014/Annex_Final_CASSR_Level_Activity_Data_2013_14.csv"))
-asc13 <- read.csv(curl())
-asc12 <- read.csv(curl())
-asc11 <- read.csv(curl())
-asc10 <- read.csv(curl())
+asc14 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2014/Annex_Final_CASSR_Level_Activity_Data_2013_14.csv"),
+                  skip = 3, colClasses = "character")
+asc13 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2013/Annex_Fin_CASSR_Level_Activity_Data_2012_13.csv"))
+asc12 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2012/Final_Council_Level_Activity_Data_2011_12.csv"))
+asc11 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2011/Final_Council_Level_Activity_Data_2010-11.csv"))
+asc10 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2010/Final_Council%20Level_ActivityData_2009-10.csv"))
+
+
 asc09 <- read.csv(curl())
 asc08 <- read.csv(curl())
 asc07 <- read.csv(curl())
@@ -183,10 +187,49 @@ total17 <- asc17 %>% dplyr::filter(GEOGRAPHY_CODE!="")%>%
  
 asc15 <- asc15 %>%
   pivot_longer( cols=!c(Support.type, Age.category, Primary.support.reason, Service.delivery.mechanism, Provision), 
-               names_to = "DH_GEOGRAPHY_NAME", values_to = "ITEMVALUE", names_prefix = "...")
+               names_to = "DH_GEOGRAPHY_NAME", values_to = "ITEMVALUE", names_prefix = ".*\\.{3}")%>%
+  dplyr::mutate( ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::select(DH_GEOGRAPHY_NAME, Service.delivery.mechanism, Provision, ITEMVALUE)%>%
+  dplyr::rename(SupportSetting=Service.delivery.mechanism,
+                ActivityProvision=Provision)%>%
+  dplyr::filter(SupportSetting=="Nursing"|SupportSetting=="Residential")%>%
+  dplyr::mutate(ActivityProvision = ifelse(ActivityProvision=="Total provision", "99",
+                                           ifelse(ActivityProvision=="In house provision", "In House",
+                                                  ifelse(ActivityProvision=="External provision", "External", ActivityProvision))))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, ActivityProvision, SupportSetting) %>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision == "99"]*100,
+                SupportSetting = ifelse(SupportSetting=="-", "", SupportSetting)) %>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(year=2015)%>%
+  dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))
+  
  
 
-plotfun <- rbind(asc18[c("percent_sector", "SupportSetting_Key", "DH_GEOGRAPHY_NAME", "ActivityProvision_Key")]%>%
+asc14 <- asc14 %>%
+  dplyr::select(X,Residents.aged.65.and.over.in.own.provision.residential.placements,
+                Residents.aged.65.and.over.in.residential.placements.provided.by.others,
+                Provided.by.the.council,
+                Provided.by.the.independent.sector,
+                Clients.aged.18.64.with.a.Learning.disability..own.provision,
+                Clients.aged.18.64.with.a.Learning.disability..provision.by.others,
+                Clients.aged.18.64.with.a.Physical.disability..own.provision,
+                Clients.aged.18.64.with.a.Physical.disability..provision.by.others,
+                Clients.aged.18.64.with.Mental.health.needs..own.provision,
+                Clients.aged.18.64.with.Mental.health.needs..provision.by.others,
+                Clients.aged.65.and.over..own.provision,
+                Clients.aged.65.and.over..provision.by.others)
+
+
+
+
+
+plotfun <- rbind( asc15[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc16[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc17[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                 asc18[c("percent_sector", "SupportSetting_Key", "DH_GEOGRAPHY_NAME", "ActivityProvision_Key")]%>%
                    dplyr::rename(SupportSetting=SupportSetting_Key,
                                  ActivityProvision=ActivityProvision_Key)%>%
                    dplyr::mutate(year=2018),
