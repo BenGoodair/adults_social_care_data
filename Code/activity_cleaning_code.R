@@ -43,10 +43,14 @@ asc15 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_soci
 
 asc14 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2014/Annex_Final_CASSR_Level_Activity_Data_2013_14.csv"),
                   skip = 3, colClasses = "character")
-asc13 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2013/Annex_Fin_CASSR_Level_Activity_Data_2012_13.csv"))
-asc12 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2012/Final_Council_Level_Activity_Data_2011_12.csv"))
-asc11 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2011/Final_Council_Level_Activity_Data_2010-11.csv"))
-asc10 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2010/Final_Council%20Level_ActivityData_2009-10.csv"))
+asc13 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2013/Annex_Fin_CASSR_Level_Activity_Data_2012_13.csv"),
+                  skip = 3, colClasses = "character")
+asc12 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2012/Final_Council_Level_Activity_Data_2011_12.csv"),
+                  skip = 3, colClasses = "character")
+asc11 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2011/Final_Council_Level_Activity_Data_2010-11.csv"),
+                  skip = 4, colClasses = "character")
+asc10 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2010/Final_Council%20Level_ActivityData_2009-10.csv"),
+                  skip = 3, colClasses = "character")
 
 
 asc09 <- read.csv(curl())
@@ -220,13 +224,187 @@ asc14 <- asc14 %>%
                 Clients.aged.18.64.with.Mental.health.needs..own.provision,
                 Clients.aged.18.64.with.Mental.health.needs..provision.by.others,
                 Clients.aged.65.and.over..own.provision,
-                Clients.aged.65.and.over..provision.by.others)
+                Clients.aged.65.and.over..provision.by.others)%>%
+  dplyr::filter(X!="",
+                X!="TOTAL England",
+                Residents.aged.65.and.over.in.own.provision.residential.placements!="")%>%
+tidyr::pivot_longer(cols=!c(X), names_to = "ActivityProvision", values_to = "ITEMVALUE")%>%
+  dplyr::mutate(SupportSetting = ifelse(stringr::str_starts(ActivityProvision, "Client"), "Day care",
+                                        ifelse(ActivityProvision=="Provided.by.the.council"|ActivityProvision=="Provided.by.the.independent.sector", "Home care", "Residential")),
+                ActivityProvision = ifelse(stringr::str_ends(ActivityProvision, "others"), "External",
+                                           ifelse(stringr::str_ends(ActivityProvision, "provision"), "In House",
+                                                  ifelse(ActivityProvision=="Provided.by.the.independent.sector", "External", "In House"))),
+                ITEMVALUE= as.numeric(gsub( ",", "", ITEMVALUE)),
+                X = gsub("^\\d+\\s+-\\s+", "", X))%>%
+  dplyr::rename(DH_GEOGRAPHY_NAME = X)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, ActivityProvision, SupportSetting) %>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100,
+                SupportSetting = ifelse(SupportSetting=="-", "", SupportSetting)) %>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(year=2014)%>%
+  dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))  
+
+
+
+
+asc13 <- asc13 %>%
+  dplyr::select(X,Residents.aged.65.and.over.in.own.provision.residential.placements,
+                Residents.aged.65.and.over.in.residential.placements.provided.by.others,
+                Provided.by.the.council,
+                Provided.by.the.independent.sector,
+                Clients.aged.18.64.with.a.Learning.disability..own.provision,
+                Clients.aged.18.64.with.a.Learning.disability..provision.by.others,
+                Clients.aged.18.64.with.a.Physical.disability..own.provision,
+                Clients.aged.18.64.with.a.Physical.disability..provision.by.others,
+                Clients.aged.18.64.with.Mental.health.needs..own.provision,
+                Clients.aged.18.64.with.Mental.health.needs..provision.by.others,
+                Clients.aged.65.and.over..own.provision,
+                Clients.aged.65.and.over..provision.by.others)%>%
+  dplyr::filter(X!="",
+                X!="TOTAL England",
+                Residents.aged.65.and.over.in.own.provision.residential.placements!="")%>%
+  tidyr::pivot_longer(cols=!c(X), names_to = "ActivityProvision", values_to = "ITEMVALUE")%>%
+  dplyr::mutate(SupportSetting = ifelse(stringr::str_starts(ActivityProvision, "Client"), "Day care",
+                                        ifelse(ActivityProvision=="Provided.by.the.council"|ActivityProvision=="Provided.by.the.independent.sector", "Home care", "Residential")),
+                ActivityProvision = ifelse(stringr::str_ends(ActivityProvision, "others"), "External",
+                                           ifelse(stringr::str_ends(ActivityProvision, "provision"), "In House",
+                                                  ifelse(ActivityProvision=="Provided.by.the.independent.sector", "External", "In House"))),
+                ITEMVALUE= as.numeric(gsub( ",", "", ITEMVALUE)),
+                X = gsub("^\\d+\\s+-\\s+", "", X))%>%
+  dplyr::rename(DH_GEOGRAPHY_NAME = X)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, ActivityProvision, SupportSetting) %>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100,
+                SupportSetting = ifelse(SupportSetting=="-", "", SupportSetting)) %>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(year=2013)%>%
+  dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))  
+
+
+
+asc12 <- asc12 %>%
+  dplyr::select(X,Residents.aged.65.and.over.in.own.provision.residential.placements,
+                Residents.aged.65.and.over.in.residential.placements.provided.by.others,
+                Provided.by.the.council,
+                Provided.by.the.independent.sector,
+                Clients.aged.18.64.with.a.Learning.disability..own.provision,
+                Clients.aged.18.64.with.a.Learning.disability..provision.by.others,
+                Clients.aged.18.64.with.a.Physical.disability..own.provision,
+                Clients.aged.18.64.with.a.Physical.disability..provision.by.others,
+                Clients.aged.18.64.with.Mental.health.needs..own.provision,
+                Clients.aged.18.64.with.Mental.health.needs..provision.by.others,
+                Clients.aged.65.and.over..own.provision,
+                Clients.aged.65.and.over..provision.by.others)%>%
+  dplyr::filter(X!="",
+                X!="TOTAL England",
+                Residents.aged.65.and.over.in.own.provision.residential.placements!="")%>%
+  tidyr::pivot_longer(cols=!c(X), names_to = "ActivityProvision", values_to = "ITEMVALUE")%>%
+  dplyr::mutate(SupportSetting = ifelse(stringr::str_starts(ActivityProvision, "Client"), "Day care",
+                                        ifelse(ActivityProvision=="Provided.by.the.council"|ActivityProvision=="Provided.by.the.independent.sector", "Home care", "Residential")),
+                ActivityProvision = ifelse(stringr::str_ends(ActivityProvision, "others"), "External",
+                                           ifelse(stringr::str_ends(ActivityProvision, "provision"), "In House",
+                                                  ifelse(ActivityProvision=="Provided.by.the.independent.sector", "External", "In House"))),
+                ITEMVALUE= as.numeric(gsub( ",", "", ITEMVALUE)),
+                X = gsub("^\\d+\\s+-\\s+", "", X))%>%
+  dplyr::rename(DH_GEOGRAPHY_NAME = X)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, ActivityProvision, SupportSetting) %>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100,
+                SupportSetting = ifelse(SupportSetting=="-", "", SupportSetting)) %>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(year=2012)%>%
+  dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))  
+
+
+asc11 <- asc11 %>%
+  dplyr::select(X,Residents.aged.65.and.over.in.own.provision.residential.placements,
+                Residents.aged.65.and.over.in.residential.placements.provided.by.others,
+                Provided.by.the.council,
+                Provided.by.the.independent.sector,
+                Clients.aged.18.64.with.a.Learning.disability..own.provision,
+                Clients.aged.18.64.with.a.Learning.disability..provision.by.others,
+                Clients.aged.18.64.with.a.Physical.disability..own.provision,
+                Clients.aged.18.64.with.a.Physical.disability..provision.by.others,
+                Clients.aged.18.64.with.Mental.health.needs..own.provision,
+                Clients.aged.18.64.with.Mental.health.needs..provision.by.others,
+                Clients.aged.65.and.over..own.provision,
+                Clients.aged.65.and.over..provision.by.others)%>%
+  dplyr::filter(X!="",
+                X!="TOTAL England",
+                Residents.aged.65.and.over.in.own.provision.residential.placements!="")%>%
+  tidyr::pivot_longer(cols=!c(X), names_to = "ActivityProvision", values_to = "ITEMVALUE")%>%
+  dplyr::mutate(SupportSetting = ifelse(stringr::str_starts(ActivityProvision, "Client"), "Day care",
+                                        ifelse(ActivityProvision=="Provided.by.the.council"|ActivityProvision=="Provided.by.the.independent.sector", "Home care", "Residential")),
+                ActivityProvision = ifelse(stringr::str_ends(ActivityProvision, "others"), "External",
+                                           ifelse(stringr::str_ends(ActivityProvision, "provision"), "In House",
+                                                  ifelse(ActivityProvision=="Provided.by.the.independent.sector", "External", "In House"))),
+                ITEMVALUE= as.numeric(gsub( ",", "", ITEMVALUE)),
+                X = gsub("^\\d+\\s+-\\s+", "", X))%>%
+  dplyr::rename(DH_GEOGRAPHY_NAME = X)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, ActivityProvision, SupportSetting) %>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100,
+                SupportSetting = ifelse(SupportSetting=="-", "", SupportSetting)) %>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(year=2011)%>%
+  dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))  
+
+
+asc10 <- asc10 %>%
+  dplyr::select(X,Residents.aged.65.and.over.in.own.provision.residential.placements,
+                Residents.aged.65.and.over.in.residential.placements.provided.by.others,
+                Provided.by.the.council,
+                Provided.by.the.independent.sector,
+                Clients.aged.18.64.with.a.Learning.disability..own.provision,
+                Clients.aged.18.64.with.a.Learning.disability..provision.by.others,
+                Clients.aged.18.64.with.a.Physical.disability..own.provision,
+                Clients.aged.18.64.with.a.Physical.disability..provision.by.others,
+                Clients.aged.18.64.with.Mental.health.needs..own.provision,
+                Clients.aged.18.64.with.Mental.health.needs..provision.by.others,
+                Clients.aged.65.and.over..own.provision,
+                Clients.aged.65.and.over..provision.by.others)%>%
+  dplyr::filter(X!="",
+                X!="TOTAL England",
+                Residents.aged.65.and.over.in.own.provision.residential.placements!="")%>%
+  tidyr::pivot_longer(cols=!c(X), names_to = "ActivityProvision", values_to = "ITEMVALUE")%>%
+  dplyr::mutate(SupportSetting = ifelse(stringr::str_starts(ActivityProvision, "Client"), "Day care",
+                                        ifelse(ActivityProvision=="Provided.by.the.council"|ActivityProvision=="Provided.by.the.independent.sector", "Home care", "Residential")),
+                ActivityProvision = ifelse(stringr::str_ends(ActivityProvision, "others"), "External",
+                                           ifelse(stringr::str_ends(ActivityProvision, "provision"), "In House",
+                                                  ifelse(ActivityProvision=="Provided.by.the.independent.sector", "External", "In House"))),
+                ITEMVALUE= as.numeric(gsub( ",", "", ITEMVALUE)),
+                X = gsub("^\\d+\\s+-\\s+", "", X))%>%
+  dplyr::rename(DH_GEOGRAPHY_NAME = X)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, ActivityProvision, SupportSetting) %>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100,
+                SupportSetting = ifelse(SupportSetting=="-", "", SupportSetting)) %>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(year=2010)%>%
+  dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))  
 
 
 
 
 
-plotfun <- rbind( asc15[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+
+plotfun <- rbind( asc10[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc11[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc12[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc13[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc14[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc15[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc16[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc17[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                  asc18[c("percent_sector", "SupportSetting_Key", "DH_GEOGRAPHY_NAME", "ActivityProvision_Key")]%>%
