@@ -414,25 +414,16 @@ asc10 <- asc10 %>%
 asc09 <- asc09 %>%
   dplyr::select(X.1,residents.aged.65.and.over.in.own.provision.residential.placements,
                 residents.aged.65.and.over.in.residential.placements.provided.by.others,
-                Provided.by.the.council,
-                Provided.by.the.independent.sector,
-                pd.residents.aged.18.64.in.own.provision.residential.placements,
-                pd.residents.aged.18.64.in.residential.placements.provided.by.others,
-                ld.residents.aged.18.64.in.own.provision.residential.placements,
-                ld.residents.aged.18.64.in.residential.placements.provided.by.others,
-                mh.residents.aged.18.64.in.own.provision.residential.placements,
-                mh.residents.aged.18.64.in.residential.placements.provided.by.others,
-                Clients.aged.65.and.over..own.provision,
-                Clients.aged.65.and.over..provision.by.others)%>%
+                X.54, X.55,
+                clients.aged.65.and.over..own.provision,
+                clients.aged.65.and.over..provision.by.others)%>%
   dplyr::rename(X=X.1,
                 Residents.aged.65.and.over.in.own.provision.residential.placements=residents.aged.65.and.over.in.own.provision.residential.placements,
                 Residents.aged.65.and.over.in.residential.placements.provided.by.others=residents.aged.65.and.over.in.residential.placements.provided.by.others,
-                Clients.aged.18.64.with.a.Learning.disability..own.provision=ld.residents.aged.18.64.in.own.provision.residential.placements,
-                Clients.aged.18.64.with.a.Learning.disability..provision.by.others=ld.residents.aged.18.64.in.residential.placements.provided.by.others,
-                Clients.aged.18.64.with.Mental.health.needs..own.provision=mh.residents.aged.18.64.in.own.provision.residential.placements,
-                Clients.aged.18.64.with.Mental.health.needs..provision.by.others=mh.residents.aged.18.64.in.residential.placements.provided.by.others,
-                Clients.aged.18.64.with.a.Physical.disability..own.provision=pd.residents.aged.18.64.in.own.provision.residential.placements,
-                Clients.aged.18.64.with.a.Physical.disability..provision.by.others=pd.residents.aged.18.64.in.residential.placements.provided.by.others)%>%
+                Clients.aged.65.and.over..own.provision=clients.aged.65.and.over..own.provision,
+                Clients.aged.65.and.over..provision.by.others=clients.aged.65.and.over..provision.by.others,
+                Provided.by.the.council=X.54,
+                Provided.by.the.independent.sector=X.55)%>%
   dplyr::filter(X!="",
                 X!="TOTAL England",
                 Residents.aged.65.and.over.in.own.provision.residential.placements!="")%>%
@@ -456,11 +447,12 @@ asc09 <- asc09 %>%
   dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))  
 
 
+asc08 <- 
 
 
 
-
-plotfun <- rbind( asc10[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+plotfun <- rbind(  asc09[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc10[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc11[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc12[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc13[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
@@ -527,4 +519,10 @@ three <- ggplot(plotfun[plotfun$SupportSetting=="",], aes(x = year, y = percent_
 
 
 plot <- cowplot::plot_grid(one,two,three, ncol=1)
+
+
+#sp and a calcs#
+
+  sum(asc22[asc22$SupportSetting=="Residential"&asc22$ActivityProvision=="In House",]$ITEMVALUE, na.rm=T)/sum(asc22[asc22$SupportSetting=="Residential"&asc22$ActivityProvision=="99",]$ITEMVALUE, na.rm=T)
+sum(asc11[asc11$SupportSetting=="Residential"&asc11$ActivityProvision=="External",]$ITEMVALUE, na.rm=T)/(sum(asc11[asc11$SupportSetting=="Residential"&asc11$ActivityProvision=="External",]$ITEMVALUE, na.rm=T)+sum(asc11[asc11$SupportSetting=="Residential"&asc11$ActivityProvision=="In House",]$ITEMVALUE, na.rm=T))
 
