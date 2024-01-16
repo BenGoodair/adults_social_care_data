@@ -1,0 +1,203 @@
+"...1","PSS EX1 Return for 2007-08 Version 11","...3","...4","...5","...6","...7"
+NA,"Data item description","Data item data","Enter Y if column C is based on average number of supported residents","Enter A if column C is an adjusted version of the source figure","Where used",NA
+NA,NA,NA,NA,NA,"Unit costs rows","PAF Indicator(s)"
+NA,"Services for adults and older people","rows 8-133",NA,NA,NA,NA
+NA,"Services for children","rows 135-164",NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,"Services for adults and older people",NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,"KS1 (Data entry sheet)",NA,NA,NA,NA,NA
+NA,"Supported residents",NA,NA,NA,NA,NA
+NA,"Number of weeks* spent in residential and nursing care (both permanent and temporary) excluding full cost paying residents and residents wholly funded under Section 28a",NA,NA,NA,NA,NA
+NA,"- row 18 (residents aged 65 and over)","4620780.5999999996",NA,NA,"1.1, 1.1A, 1.2, 1.2A","B12"
+NA,"- residents aged 18 to 64 with",NA,NA,NA,NA,NA
+NA,"- row 20 (learning disability)","859041.80000000005",NA,NA,"1.1, 1.1A, 1.7, 1.7A","B12"
+NA,"- row 21 (mental health problems)","206843",NA,NA,"1.1, 1.1A, 1.12, 1.12A","B12"
+NA,"- row 22 (physical disability)","210956",NA,NA,"1.1, 1.1A, 1.17, 1.17A","B12"
+NA,NA,NA,NA,NA,NA,NA
+NA,"Full cost paying residents*",NA,NA,NA,NA,NA
+NA,"Number of weeks spent in LA residential homes (both permanent and temporary placements) by",NA,NA,NA,NA,NA
+NA,"- residents aged 65 and over","45970.709999999999",NA,NA,"1.1, 1.1A, 1.2, 1.2A, 1.4, 1.5","B12"
+NA,"- residents aged 18 to 64 with",NA,NA,NA,NA,NA
+NA,"- learning disabilities","18",NA,NA,"1.1, 1.1A, 1.7, 1.7A, 1.9, 1.10","B12"
+NA,"- mental health problems","165",NA,NA,"1.1, 1.1A, 1.12, 1.12A, 1.14, 1.15","B12"
+NA,"- physical disabilities","41",NA,NA,"1.1, 1.1A, 1.17, 1.17A, 1.19, 1.20","B12"
+NA,"Number of weeks spent in residential homes provided by others (both permanent and temporary placements) by residents whose full costs are included under expenditure (and income) by",NA,NA,NA,NA,NA
+NA,"- residents aged 65 and over","155739.29000000001",NA,NA,"1.1, 1.1A, 1.2, 1.2A, 1.4, 1.6","B12"
+NA,"- residents aged 18 to 64 with",NA,NA,NA,NA,NA
+NA,"- learning disabilities","2967.2857142857142",NA,NA,"1.1, 1.1A, 1.7, 1.7A, 1.9, 1.11","B12"
+NA,"- mental health problems","1391.5699999999999",NA,NA,"1.1, 1.1A, 1.12, 1.12A, 1.14, 1.16","B12"
+NA,"- physical disabilities","1102.0042857142857",NA,NA,"1.1, 1.1A, 1.17, 1.17A, 1.19, 1.21","B12"
+NA,"Number of weeks spent in nursing homes (both permanent and temporary placements) by residents whose full costs are included under expenditure (and income) by",NA,NA,NA,NA,NA
+NA,"- residents aged 65 and over","60074.282857142854",NA,NA,"1.1, 1.1A, 1.2, 1.2A, 1.3","B12"
+NA,"- residents aged 18 to 64 with",NA,NA,NA,NA,NA
+NA,"- learning disabilities","44",NA,NA,"1.1, 1.1A. 1.7, 1.7A, 1.8","B12"
+NA,"- mental health problems","478.85714285714283",NA,NA,"1.1, 1.1A, 1.12, 1.12A, 1.13","B12"
+NA,"- physical disabilities","1308.7142857142858",NA,NA,"1.1, 1.1A, 1.17, 1.17A, 1.18","B12"
+NA,NA,NA,NA,NA,NA,NA
+NA,"Residents wholly funded under Section 28(a)*",NA,NA,NA,NA,NA
+NA,"Number of weeks spent in LA residential homes (both permanent and temporary placements) by",NA,NA,NA,NA,NA
+NA,"- residents aged 65 and over","528",NA,NA,"1.1, 1.2, 1.4, 1.5","B12"
+NA,"- residents aged 18 to 64 with",NA,NA,NA,NA,NA
+NA,"- learning disabilities","2164",NA,NA,"1.1, 1.7, 1.9, 1.10","B12"
+NA,"- mental health problems","2259",NA,NA,"1.1, 1.12, 1.14, 1.15","B12"
+NA,"- physical disabilities","727",NA,NA,"1.1, 1.17, 1.19, 1.20","B12"
+NA,"Number of weeks spent in residential homes provided by others (both permanent and temporary placements) by residents whose full costs are included under expenditure (and income) by",NA,NA,NA,NA,NA
+NA,"- residents aged 65 and over","20982.290000000001",NA,NA,"1.1, 1.2, 1.4, 1.6","B12"
+NA,"- residents aged 18 to 64 with",NA,NA,NA,NA,NA
+NA,"- learning disabilities","50253.709999999999",NA,NA,"1.1, 1.7, 1.9, 1.11","B12"
+NA,"- mental health problems","2748.4299999999998",NA,NA,"1.1, 1.12, 1.14, 1.16","B12"
+NA,"- physical disabilities","813.28999999999996",NA,NA,"1.1, 1.17, 1.19, 1.21","B12"
+NA,"Number of weeks spent in nursing homes (both permanent and temporary placements) by residents whose full costs are included under expenditure (and income) by",NA,NA,NA,NA,NA
+NA,"- residents aged 65 and over","8623",NA,NA,"1.1, 1.2, 1.3","B12"
+NA,"- residents aged 18 to 64 with",NA,NA,NA,NA,NA
+NA,"- learning disabilities","5435.29",NA,NA,"1.1, 1.7, 1.8","B12"
+NA,"- mental health problems","1482",NA,NA,"1.1, 1.12, 1.13","B12"
+NA,"- physical disabilities","5007.5699999999997",NA,NA,"1.1, 1.17, 1.18","B12"
+NA,NA,NA,NA,NA,NA,NA
+NA,"HH1",NA,NA,NA,NA,NA
+NA,"Table 1 line 4 column A (Total hours, LA)","358196",NA,NA,"1.22, 1.23","B17"
+NA,"Table 1 line 4 column B (Total hours, Independent sector)","1382436",NA,NA,"1.22, 1.24","B17"
+NA,"Table 3B (Hhs receiving >10 hours and 6+ visits)","45008",NA,NA,"1.1, 1.1A","B12"
+NA,"Actual hours of home care provided during the year",NA,NA,NA,NA,NA
+NA,"- provided by the Council","10925316.449999999",NA,NA,"1.22A, 1.23A",NA
+NA,"- provided by the independent sector","49096250.799999997",NA,NA,"1.22A, 1.24A",NA
+NA,"RAP",NA,NA,NA,NA,NA
+NA,"Table R1 Box 1 (Total screened contacts of new clients passed on for further assessment or commissioning of service)","504474",NA,NA,NA,NA
+NA,"Clients with completed assessments",NA,NA,NA,NA,NA
+NA,"Table A1 Page 1 line 1 col 1 (18-64 pd)","42778",NA,NA,NA,NA
+NA,"Table A1 Page 1 line 9 col 1 (18-64 ld)","3120",NA,NA,NA,NA
+NA,"Table A1 Page 1 line 6 col 1 (18-64 mh)","29068",NA,NA,NA,NA
+NA,"Table A1 Page 1 line 10 col 1 (18-64 sm)","1651",NA,NA,NA,NA
+NA,"Table A1 Page 1 line 11 cols 2 + 3 (65+ col totals)","235162",NA,NA,NA,NA
+NA,"Table A1 Page 2 Box 1 (Overall total of existing clients with reviews)","659346",NA,NA,NA,NA
+NA,"Receiving services at 31 March 2008",NA,NA,NA,NA,NA
+NA,"Table P2s Page 1 line 1 col 2 (18-64 pd home care)","17173",NA,NA,"1.29",NA
+NA,"Table P2s Page 1 line 1 col 3 (18-64 pd day care)","7520",NA,NA,"1.47",NA
+NA,"Table P2s Page 2 line 1 col 1 (18-64 pd direct payments)","10314",NA,NA,"1.3400000000000001",NA
+NA,"Table P2s Page 1 line 9 col 2 (18-64 ld home care)","13758",NA,NA,"1.27",NA
+NA,"Table P2s Page 1 line 9 col 3 (18-64 ld day care)","22601",NA,NA,"1.45",NA
+NA,"Table P2s Page 2 line 9 col 1 (18-64 ld direct payments)","4187",NA,NA,"1.3200000000000001",NA
+NA,"Table P2s Page 1 line 6 col 2 (18-64 mh home care)","6604",NA,NA,"1.28",NA
+NA,"Table P2s Page 1 line 6 col 3 (18-64 mh day care)","8271",NA,NA,"1.46",NA
+NA,"Table P2s Page 2 line 6 col 1 (18-64 mh direct payments)","2162",NA,NA,"1.3300000000000001",NA
+NA,"Table P2s Page 2 line 11 col 1 (18-64 total direct payments)","16886",NA,NA,NA,NA
+NA,"Table P2s Pages 3 + 5 line 11 col 2 (65+ home care)","127630",NA,NA,"1.26",NA
+NA,"Table P2s Pages 3 + 5 line 11 col 3 (65+ day care)","39062",NA,NA,"1.4399999999999999",NA
+NA,"Table P2s Pages 3 + 5 line 11 col 4 (65+ meals)","34856",NA,NA,"1.5600000000000001",NA
+NA,"Table P2s Pages 4 line 11 col 1 (65-74 direct payments)","2956",NA,NA,"1.3100000000000001",NA
+NA,"Table P2s Page 7 box 1 (75-84 direct payments)","3644",NA,NA,"1.3100000000000001",NA
+NA,"Table P2s Page 7 box 2 (85+ direct payments)","3784",NA,NA,"1.3100000000000001",NA
+NA,"Table P2s Pages 1 + 3 + 5 line 11 col 2 (all ages home care)","165881",NA,NA,"1.25",NA
+NA,"Table P2s Pages 1 + 3 + 5 line 11 col 3 (all ages day care)","76865",NA,NA,"1.4299999999999999",NA
+NA,"Table P2s Pages 1 + 3 + 5 line 11 col 4 (all ages meals)","37259",NA,NA,"1.55",NA
+NA,"Table P2s Pages 2 + 4 + 6 line 11 col 1 (all ages direct payments)","27270",NA,NA,"1.30",NA
+NA,"Other",NA,NA,NA,NA,NA
+NA,"Total meals provided by LA per week on average during year","28767",NA,NA,"1.52A, 1.53",NA
+NA,"Total meals provided by independent sector per week on average during year","117255",NA,NA,"1.52A, 1.54",NA
+NA,"Number of weeks supported residents spent in residential and nursing care (both permanent and temporary):",NA,NA,NA,NA,NA
+NA,"residents aged 65 and over in nursing placements","1436877.5601714288",NA,NA,"1.3",NA
+NA,"residents aged 65 and over in own provision residential placements","447378.94319999998",NA,NA,"1.4, 1.5",NA
+NA,"residents aged 65 and over in residential placements provided by others","2736524.0966285705",NA,NA,"1.4, 1.6",NA
+NA,"pd residents aged 18-64 in nursing placements","82920.372428571427",NA,NA,"1.1799999999999999",NA
+NA,"pd residents aged 18-64 in own provision residential placements","6697.9740000000002",NA,NA,"1.19, 1.20",NA
+NA,"pd residents aged 18-64 in residential placements provided by others","121337.65357142857",NA,NA,"1.19, 1.21",NA
+NA,"ld residents aged 18-64 in nursing placements","42943.43",NA,NA,"1.8",NA
+NA,"ld residents aged 18-64 in own provision residential placements","76526.139999999999",NA,NA,"1.9, 1.10",NA
+NA,"ld residents aged 18-64 in residential placements provided by others","739572.22999999998",NA,NA,"1.9, 1.11",NA
+NA,"mh residents aged 18-64 in nursing placements","38913.311857142864",NA,NA,"1.1299999999999999",NA
+NA,"mh residents aged 18-64 in own provision residential placements","2105.0259999999998",NA,NA,"1.14, 1.15",NA
+NA,"mh residents aged 18-64 in residential placements provided by others","165824.66214285712",NA,NA,"1.14, 1.16",NA
+NA,"Number of day care sessions per week on average during the year",NA,NA,NA,NA,NA
+NA,"clients aged 65 and over, own provision","50432",NA,NA,"1.34A,1.35",NA
+NA,"clients aged 65 and over, provision by others","41933.806045214398",NA,NA,"1.34A,1.36",NA
+NA,"pd clients aged 18-64, own provision","12942.59429008",NA,NA,"1.40A,1.41",NA
+NA,"pd clients aged 18-64, provision by others","9881",NA,NA,"1.40A,1.42",NA
+NA,"ld clients aged 18-64, own provision","106072.27470819",NA,NA,"1.36A,1.37",NA
+NA,"ld clients aged 18-64, provision by others","27817",NA,NA,"1.36A,1.38",NA
+NA,"mh clients aged 18-64, own provision","6766",NA,NA,"1.38A,1.39",NA
+NA,"mh clients aged 18-64, provision by others","14197",NA,NA,"1.38A,1.40",NA
+NA,"Referrals between 1 April 2007 and 31 March 2008",NA,NA,NA,NA,NA
+NA,"Older people (aged 65 or over) including older mentally ill","399846",NA,NA,NA,NA
+NA,"Adults aged under 65 with a physical disability or sensory impairment","75389",NA,NA,NA,NA
+NA,"Adults aged under 65 with learning disabilities","7404",NA,NA,NA,NA
+NA,"Adults aged under 65 with mental health needs","27939",NA,NA,NA,NA
+NA,"Reviews completed between 1 April 2007 and 31 March 2008",NA,NA,NA,NA,NA
+NA,"Older people (aged 65 or over) including older mentally ill","652585",NA,NA,NA,NA
+NA,"Adults aged under 65 with a physical disability or sensory impairment","101539",NA,NA,NA,NA
+NA,"Adults aged under 65 with learning disabilities","55915",NA,NA,NA,NA
+NA,"Adults aged under 65 with mental health needs","65279",NA,NA,NA,NA
+NA,"Receiving direct payments at 31 March 2008",NA,NA,NA,NA,NA
+NA,"Young carers (aged 16-17)","-",NA,NA,"2.7999999999999998",NA
+NA,"Carers (for carers services)","4105",NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,"Services for children",NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,"SSDA903 on a 100% count basis",NA,NA,NA,NA,NA
+NA,"Count of total number of days during year that CLA spent in placements (excluding children accommodated under a series of short term breaks (legal status V3 and V4) and Unaccompanied Asylum Seeking Children)",NA,NA,NA,NA,NA
+NA,"- A3, A4, A5, A6 (placed for adoption) - own provision","321073",NA,NA,"2.1, 2.3, 2.4","B8"
+NA,"- A3, A4, A5, A6 (placed for adoption) - provision by others","18504",NA,NA,"2.1, 2.3, 2.5","B8"
+NA,"- F1, F2, F4, F5 (own provision foster placements)","4133064",NA,NA,"2.1, 2.3, 2.4","B8"
+NA,"- F3, F6 (foster placements provided by others)","824747",NA,NA,"2.1, 2.3, 2.5","B8"
+NA,"- H3 to H5 (homes, hostels etc) - own provision","324045",NA,NA,"2.1, 2.2, 2.2A","B8"
+NA,"- H3 to H5 (homes, hostels etc) - provision by others","353490",NA,NA,"2.1, 2.2, 2.2B","B8"
+NA,"- S1 (residential schools) - own provision","5655",NA,NA,"2.1, 2.2, 2.2A","B8"
+NA,"- S1 (residential schools) - provision by others","154557",NA,NA,"2.1, 2.2, 2.2B","B8"
+NA,NA,"0",NA,NA,NA,NA
+NA,"- H1, H2 (secure accommodation (welfare))","16680",NA,NA,"2.6000000000000001",NA
+NA,"CPR3",NA,NA,NA,NA,NA
+NA,"Part A 1.Total number of referrals of children who have been the subject of referral (including re-referrals) in the year","190689",NA,NA,NA,NA
+NA,"Part A 2.Total number of initial assessments of children receiving initial assessment in the year (sum of ""completed within 7 working days of referral"" and ""other initial assessments completed in the year"")","118441",NA,NA,NA,NA
+NA,"Other",NA,NA,NA,NA,NA
+NA,"Children and their families - number of reviews during year","83876",NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,"Number of nights children looked after (other than Unacommpanied Asylum Seeking Children) spent in short term placements (SSDA 903 legal status V3 and V4) under Reg 13 of the Arrangement for Placement of Children Regulations 1991 (including in respite placements under Section 20)",NA,NA,NA,NA,NA
+NA,"- Own provision Foster placements (SSDA 903 placement codes F1, F2, F4, F5)","77025",NA,NA,"2.1, 2.3, 2.4","B8"
+NA,"- Provision by others Foster placements (SSDA 903 placement codes F3, F6)","12665.35",NA,NA,"2.1, 2.3, 2.5","B8"
+NA,"- Own provision Children's homes (SSDA 903 placement codes H3 to H5)","93055.850000000006",NA,NA,"2.1, 2.2, 2.2A","B8"
+NA,"- Provision by others Children's homes (SSDA 903 placement codes H3 to H5)","25414",NA,NA,"2.1, 2.2, 2.2B","B8"
+NA,"Receiving direct payments at 31 March 2008",NA,NA,NA,NA,NA
+NA,"Disabled children (aged 16-17)","394",NA,NA,"2.7999999999999998",NA
+NA,"Carers (eg parents) of disabled children","3997",NA,NA,"2.7999999999999998",NA
+NA,NA,NA,NA,NA,NA,NA
+NA,"* Average number of residents multiplied by 52 may be used if number of weeks is not available; if this is used, please enter Y in column D.",NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,"For any items above for which you adjust a figure from the source shown (eg to allow for a distorting factor) and enter A in column E, give details below",NA,NA,NA,NA,NA
+NA,"Line no above","Source","Figure","Size of","Reason for adjustment",NA
+NA,NA,"figure","entered","adjustment",NA,NA
+NA,NA,NA,"above",NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA
+"1. This data is the sum of all the data for councils that provided data.  Missing data have been treated as zeros.",NA,NA,NA,NA,NA,NA
