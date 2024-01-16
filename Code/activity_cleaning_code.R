@@ -660,33 +660,33 @@ asc07 <- all_df %>%
   
   
   
+ #  
+ # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\dh_4104162.xls"
+ # 
+ # excel_sheets <- excel_sheets(excel_path)
+ # 
+ # for (sheet_name in excel_sheets) {
+ #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+ #   
+ #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\council_csvs\\output_", sheet_name, ".csv")
+ #   
+ #   write.csv(df, file = csv_path, row.names = FALSE)
+ # }
+ # 
+ # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\council_csvs\\sheet_names.csv", row.names = FALSE)
+ # 
   
-  # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\dh_4104162.xls"
-  # 
-  # excel_sheets <- excel_sheets(excel_path)
-  # 
-  # for (sheet_name in excel_sheets) {
-  #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
-  #   
-  #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\council_csvs\\output_", sheet_name, ".csv")
-  #   
-  #   write.csv(df, file = csv_path, row.names = FALSE)
-  # }
-  # 
-  # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\council_csvs\\sheet_names.csv", row.names = FALSE)
-  # 
-  #  
-  sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2005/council_csvs/sheet_names.csv"))
+  sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2004/council_csvs/sheet_names.csv"))
   
   sheet_names$x <- gsub(" ", "%20", sheet_names$x)
   
-  all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2005/council_csvs/output_Barnsley.csv"), skip=1)%>%
+  all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2004/council_csvs/output_Barnsley.csv"), skip=1)%>%
     dplyr::select(dplyr::starts_with("Data"))%>%
     dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
   
   
   for (i in sheet_names$x) {
-    df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2005/council_csvs/output_", i, ".csv")), skip=1)%>%
+    df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2004/council_csvs/output_", i, ".csv")), skip=1)%>%
       dplyr::select(dplyr::starts_with("Data"))%>%
       dplyr::mutate(DH_GEOGRAPHY_NAME=i)
     
@@ -695,14 +695,14 @@ asc07 <- all_df %>%
   }
   
   
-  asc05 <- all_df %>% 
+  asc04 <- all_df %>% 
     dplyr::filter(Data.item.description=="residents aged 65 and over in own provision residential placements"|
                     Data.item.description=="residents aged 65 and over in residential placements provided by others" )%>%
     dplyr::distinct()%>%
     dplyr::mutate(SupportSetting="Residential",
                   ActivityProvision = ifelse(Data.item.description=="residents aged 65 and over in own provision residential placements", "In House",
                                              "External"),
-                  year=2005,
+                  year=2004,
                   ITEMVALUE=as.numeric(Data.item.data))%>%
     dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
     dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100) %>%
@@ -712,7 +712,8 @@ asc07 <- all_df %>%
   
   
 
-plotfun <- rbind( asc05[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+plotfun <- rbind( asc04[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc05[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc06[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc07[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc08[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
