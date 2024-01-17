@@ -765,8 +765,113 @@ asc07 <- all_df %>%
   
   
   
+    
+    
+   # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\dh_4059247.xls"
+   # 
+   # excel_sheets <- excel_sheets(excel_path)
+   # 
+   # for (sheet_name in excel_sheets) {
+   #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+   #   
+   #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\council_csvs\\output_", sheet_name, ".csv")
+   #   
+   #   write.csv(df, file = csv_path, row.names = FALSE)
+   # }
+   # 
+   # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\council_csvs\\sheet_names.csv", row.names = FALSE)
+   # 
+  
+  sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2002/council_csvs/sheet_names.csv"))
+  
+  sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+  
+  all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2002/council_csvs/output_Barnsley.csv"), skip=1)%>%
+    dplyr::select(dplyr::starts_with("Data"))%>%
+    dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+  
+  
+  for (i in sheet_names$x) {
+    df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2002/council_csvs/output_", i, ".csv")), skip=1)%>%
+      dplyr::select(dplyr::starts_with("Data"))%>%
+      dplyr::mutate(DH_GEOGRAPHY_NAME=i)
+    
+    all_df <- rbind(all_df, df)
+    print(i)
+  }
+  
+  
+  asc02 <- all_df %>% 
+    dplyr::filter(Data.item.description=="residents aged 65 and over in own provision residential placements"|
+                    Data.item.description=="residents aged 65 and over in residential placements provided by others" )%>%
+    dplyr::distinct()%>%
+    dplyr::mutate(SupportSetting="Residential",
+                  ActivityProvision = ifelse(Data.item.description=="residents aged 65 and over in own provision residential placements", "In House",
+                                             "External"),
+                  year=2002,
+                  ITEMVALUE=as.numeric(Data.item.data))%>%
+    dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+    dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100) %>%
+    dplyr::ungroup()
+  
+  
+  
+  
+   # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2001\\dh_4058989 (1).xls"
+   # 
+   # excel_sheets <- excel_sheets(excel_path)
+   # 
+   # for (sheet_name in excel_sheets) {
+   #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+   #   
+   #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2001\\council_csvs\\output_", sheet_name, ".csv")
+   #   
+   #   write.csv(df, file = csv_path, row.names = FALSE)
+   # }
+   # 
+   # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2001\\council_csvs\\sheet_names.csv", row.names = FALSE)
+   # 
+  
+  sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2001/council_csvs/sheet_names.csv"))
+  
+  sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+  
+  all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2001/council_csvs/output_Barnsley.csv"), skip=1)%>%
+    dplyr::select(dplyr::starts_with("Data"))%>%
+    dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+  
+  
+  for (i in sheet_names$x) {
+    df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2001/council_csvs/output_", i, ".csv")), skip=1)[c(1,2)]%>%
+      dplyr::mutate(DH_GEOGRAPHY_NAME=i)
+    
+    names(df) <- c("Data.item.description", "Data.item.data", "DH_GEOGRAPHY_NAME")
+    
+    all_df <- rbind(all_df, df)
+    print(i)
+  }
+  
+  
+  asc01 <- all_df %>% 
+    dplyr::filter(Data.item.description=="residents aged 65 and over in own provision residential placements"|
+                    Data.item.description=="residents aged 65 and over in residential placements provided by others" )%>%
+    dplyr::distinct()%>%
+    dplyr::mutate(SupportSetting="Residential",
+                  ActivityProvision = ifelse(Data.item.description=="residents aged 65 and over in own provision residential placements", "In House",
+                                             "External"),
+                  year=2001,
+                  ITEMVALUE=as.numeric(Data.item.data))%>%
+    dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+    dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100) %>%
+    dplyr::ungroup()
+  
+  
+  
+  
 
-plotfun <- rbind( asc03[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+plotfun <- rbind( asc01[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc02[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
+                  asc03[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc04[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc05[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
                   asc06[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
@@ -798,11 +903,35 @@ plotfun <- rbind( asc03[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME
                  asc23[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision")]%>%
                    dplyr::mutate(year=2023)
                  )%>%
-  dplyr::filter(ActivityProvision=="External")
+  dplyr::filter(ActivityProvision=="External",
+                SupportSetting=="Residential")
 
 library(ggplot2)
 
-# Assuming 'filtered_df_spend' is your data frame in R
+df <- plotfun %>%
+  dplyr::mutate(DH_GEOGRAPHY_NAME = DH_GEOGRAPHY_NAME %>%
+                  gsub('%20', " ",.)%>%
+                  gsub('&', 'and', .) %>%
+                  gsub('[[:punct:] ]+', ' ', .) %>%
+                  gsub('[0-9]', '', .)%>%
+                  toupper() %>%
+                  gsub("CITY OF", "",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("COUNTY OF", "",.)%>%
+                  gsub("ROYAL BOROUGH OF", "",.)%>%
+                  gsub("LEICESTER CITY", "LEICESTER",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("DARWIN", "DARWEN", .)%>%
+                  gsub("AND DARWEN", "WITH DARWEN", .)%>%
+                  gsub("NE SOM", "NORTH EAST SOM", .)%>%
+                  gsub("N E SOM", "NORTH EAST SOM", .)%>%
+                  str_trim())%>%
+  dplyr::filter(!grepl("TOTAL", DH_GEOGRAPHY_NAME))
+
+
+#Clean names, merge with deaths...
+
+
 
 one <- ggplot(plotfun[plotfun$SupportSetting=="Nursing",], aes(x = year, y = percent_sector, color = percent_sector)) +
   geom_point(size = 3) +
