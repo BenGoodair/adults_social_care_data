@@ -956,7 +956,75 @@ le <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_
 
 df <- merge(df, le, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
 
-summary(plm(v4_2~lag(percent_sector), data=df[df$sex=="female",], method="within", effect="twoway" ))
+
+
+de <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Outcomes/deaths_from_falls.csv"), skip=8)%>%
+  tidyr::pivot_longer(cols = !c(local.authority..county...unitary..as.of.April.2021.), names_to = "year", values_to = "deaths_falls")%>%
+  dplyr::mutate(DH_GEOGRAPHY_NAME = local.authority..county...unitary..as.of.April.2021. %>%
+                  gsub('%20', " ",.)%>%
+                  gsub('&', 'and', .) %>%
+                  gsub('[[:punct:] ]+', ' ', .) %>%
+                  gsub('[0-9]', '', .)%>%
+                  toupper() %>%
+                  gsub("CITY OF", "",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("COUNTY OF", "",.)%>%
+                  gsub("ROYAL BOROUGH OF", "",.)%>%
+                  gsub("LEICESTER CITY", "LEICESTER",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("DARWIN", "DARWEN", .)%>%
+                  gsub("AND DARWEN", "WITH DARWEN", .)%>%
+                  gsub("NE SOM", "NORTH EAST SOM", .)%>%
+                  gsub("N E SOM", "NORTH EAST SOM", .)%>%
+                  str_trim(),
+                year = year %>%
+                  substr(., start = 2, stop = 5)%>%
+                  as.numeric(.))
+
+df <- merge(df, de, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
+
+
+
+
+de2 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Outcomes/death_rate_falls.csv"), skip=8)%>%
+  tidyr::pivot_longer(cols = !c(local.authority..county...unitary..as.of.April.2021.), names_to = "year", values_to = "deaths_falls")%>%
+  dplyr::mutate(DH_GEOGRAPHY_NAME = local.authority..county...unitary..as.of.April.2021. %>%
+                  gsub('%20', " ",.)%>%
+                  gsub('&', 'and', .) %>%
+                  gsub('[[:punct:] ]+', ' ', .) %>%
+                  gsub('[0-9]', '', .)%>%
+                  toupper() %>%
+                  gsub("CITY OF", "",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("COUNTY OF", "",.)%>%
+                  gsub("ROYAL BOROUGH OF", "",.)%>%
+                  gsub("LEICESTER CITY", "LEICESTER",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("DARWIN", "DARWEN", .)%>%
+                  gsub("AND DARWEN", "WITH DARWEN", .)%>%
+                  gsub("NE SOM", "NORTH EAST SOM", .)%>%
+                  gsub("N E SOM", "NORTH EAST SOM", .)%>%
+                  str_trim(),
+                year = year %>%
+                  substr(., start = 2, stop = 5)%>%
+                  as.numeric(.))
+
+df <- merge(df, de, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
+
+
+
+lags <- df %>% dplyr::select(DH_GEOGRAPHY_NAME, year, percent_sector)%>%
+  dplyr::rename(lagged_percent_sector=percent_sector)%>%
+  dplyr::mutate(year = year+1)
+
+
+df <-  merge(df, lags, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
+
+
+summary(lm(v4_2~lagged_percent_sector+DH_GEOGRAPHY_NAME+year, data=df[df$sex=="female",] ))
+summary(lm(deaths_falls~lagged_percent_sector+DH_GEOGRAPHY_NAME+year, data=df[df$sex=="female",] ))
+
+
 
 one <- ggplot(plotfun[plotfun$SupportSetting=="Nursing",], aes(x = year, y = percent_sector, color = percent_sector)) +
   geom_point(size = 3) +
