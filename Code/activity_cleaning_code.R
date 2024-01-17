@@ -931,7 +931,8 @@ df <- plotfun %>%
 #Clean names, merge with deaths...
 
 le <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Outcomes/life-expectancy-by-local-authority-time-series-v1.csv"))%>%
-  dplyr::filter(AgeGroups=="65-69")%>%
+  dplyr::filter(AgeGroups=="65-69",
+                sex=="male")%>%
   dplyr::mutate(DH_GEOGRAPHY_NAME = Geography %>%
                   gsub('%20', " ",.)%>%
                   gsub('&', 'and', .) %>%
@@ -952,7 +953,7 @@ le <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_
                 year = Time %>%
                   substr(., start = 1, stop = 4)%>%
                   as.numeric(.)+1)%>%
-  dplyr::select(v4_2, year, DH_GEOGRAPHY_NAME, sex)
+  dplyr::select(v4_2, year, DH_GEOGRAPHY_NAME)
 
 df <- merge(df, le, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
 
@@ -979,7 +980,8 @@ de <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_
                   str_trim(),
                 year = year %>%
                   substr(., start = 2, stop = 5)%>%
-                  as.numeric(.))
+                  as.numeric(.),
+                deaths_falls = as.numeric(deaths_falls))
 
 df <- merge(df, de, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
 
@@ -987,7 +989,7 @@ df <- merge(df, de, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
 
 
 de2 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Outcomes/death_rate_falls.csv"), skip=8)%>%
-  tidyr::pivot_longer(cols = !c(local.authority..county...unitary..as.of.April.2021.), names_to = "year", values_to = "deaths_falls")%>%
+  tidyr::pivot_longer(cols = !c(local.authority..county...unitary..as.of.April.2021.), names_to = "year", values_to = "death_rate_falls")%>%
   dplyr::mutate(DH_GEOGRAPHY_NAME = local.authority..county...unitary..as.of.April.2021. %>%
                   gsub('%20', " ",.)%>%
                   gsub('&', 'and', .) %>%
@@ -1007,9 +1009,12 @@ de2 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social
                   str_trim(),
                 year = year %>%
                   substr(., start = 2, stop = 5)%>%
+                  as.numeric(.),
+                death_rate_falls = death_rate_falls%>%
+                  gsub(',', '', .)%>%
                   as.numeric(.))
 
-df <- merge(df, de, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
+df <- merge(df, de2, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
 
 
 
@@ -1020,9 +1025,82 @@ lags <- df %>% dplyr::select(DH_GEOGRAPHY_NAME, year, percent_sector)%>%
 
 df <-  merge(df, lags, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
 
+df <- unique(df)
 
-summary(lm(v4_2~lagged_percent_sector+DH_GEOGRAPHY_NAME+year, data=df[df$sex=="female",] ))
-summary(lm(deaths_falls~lagged_percent_sector+DH_GEOGRAPHY_NAME+year, data=df[df$sex=="female",] ))
+summary(lm(log(v4_2)~lagged_percent_sector+DH_GEOGRAPHY_NAME+factor(year), data=df ))
+summary(lm(log(death_rate_falls)~lagged_percent_sector+DH_GEOGRAPHY_NAME+factor(year), data=df ))
+summary(lm(log(as.numeric(deaths_falls)+1)~lagged_percent_sector+DH_GEOGRAPHY_NAME+factor(year), data=df ))
+
+
+
+
+dfchange <- df
+dfchange$year <- factor(dfchange$year)
+
+
+dfchange11 <- dfchange[which(dfchange$year=="2002"),]
+dfchange22 <- dfchange[which(dfchange$year=="2018"),]
+
+dfchange11 <- dfchange11[c("DH_GEOGRAPHY_NAME", "percent_sector", "v4_2")]
+dfchange22 <- dfchange22[c("DH_GEOGRAPHY_NAME", "percent_sector", "v4_2")]
+
+names(dfchange11)[names(dfchange11)=="percent_sector"] <- "profit_11"
+names(dfchange11)[names(dfchange11)=="v4_2"] <- "v4_2_11"
+
+names(dfchange22)[names(dfchange22)=="percent_sector"] <- "profit_22"
+names(dfchange22)[names(dfchange22)=="v4_2"] <- "v4_2_22"
+
+
+
+dfchange <- merge(dfchange11, dfchange22, by="DH_GEOGRAPHY_NAME", all=T)
+
+
+dfchange$profitchange <- dfchange$profit_22-dfchange$profit_11
+dfchange$v4_2change <- dfchange$v4_2_22-dfchange$v4_2_11
+
+dfchange <- dfchange[complete.cases(dfchange),]
+
+x <- ggplot(dfchange,aes(x=profitchange, y=v4_2change))+
+  geom_point()+
+  theme_bw()+
+  labs(title = "Life expectancy at age 65 and social care outsourcing" ,x="Change in outsourcing", y="Change in life expectancy\n(% points, 2002-18)")+
+  stat_smooth(method="lm")+
+  geom_vline(xintercept = 0, linetype="dashed")+
+  geom_hline(yintercept = 0, linetype="dashed")
+
+
+x <- cowplot::get_legend(x)
+
+
+a <- ggplot(dfchange, aes(x=profitchange, y=outsidelachange, size=CLA_Mar))+
+  geom_point(aes(color=region_name, alpha=0.3))+
+  theme_nice()+
+  labs(title = "Placements at Distance" ,x="", y="Change in placements outside LA boundary\n(% points, 2011-22)")+
+  stat_smooth(method="lm")+
+  geom_vline(xintercept = 0, linetype="dashed")+
+  geom_hline(yintercept = 0, linetype="dashed")+
+  theme(axis.text.x =element_blank(), legend.position = "none")
+
+b <- ggplot(dfchange, aes(x=profitchange, y=unstablechange, size=CLA_Mar))+
+  geom_point(aes(color=region_name, alpha=0.3))+
+  theme_nice()+
+  labs(title="Placement Instability (Duration)",x="Change in for-profit outsourcing (% points, 2011-22)", y="Change in placements outside LA boundary\n(% points, 2011-22)")+
+  stat_smooth(method="lm")+
+  geom_vline(xintercept = 0, linetype="dashed")+
+  geom_hline(yintercept = 0, linetype="dashed")+
+  theme(legend.position = "none")
+
+fig1 <- cowplot::plot_grid(a,b,ncol=1)
+fig1 <- cowplot::plot_grid(fig1, x, ncol=2, rel_widths = c(0.8,0.2))
+
+fig1
+
+
+
+
+
+
+
 
 
 
