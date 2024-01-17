@@ -1,6 +1,6 @@
 if (!require("pacman")) install.packages("pacman")
 
-pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl)
+pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
 
 
 
@@ -448,8 +448,7 @@ asc09 <- asc09 %>%
 
 
 
-library(readxl)
-library(dplyr)
+
 
 # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2008\\DetailedActivityDataByCouncil2007-08 supressed (values only).xls"
 # 
@@ -931,7 +930,33 @@ df <- plotfun %>%
 
 #Clean names, merge with deaths...
 
+le <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Outcomes/life-expectancy-by-local-authority-time-series-v1.csv"))%>%
+  dplyr::filter(AgeGroups=="65-69")%>%
+  dplyr::mutate(DH_GEOGRAPHY_NAME = Geography %>%
+                  gsub('%20', " ",.)%>%
+                  gsub('&', 'and', .) %>%
+                  gsub('[[:punct:] ]+', ' ', .) %>%
+                  gsub('[0-9]', '', .)%>%
+                  toupper() %>%
+                  gsub("CITY OF", "",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("COUNTY OF", "",.)%>%
+                  gsub("ROYAL BOROUGH OF", "",.)%>%
+                  gsub("LEICESTER CITY", "LEICESTER",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("DARWIN", "DARWEN", .)%>%
+                  gsub("AND DARWEN", "WITH DARWEN", .)%>%
+                  gsub("NE SOM", "NORTH EAST SOM", .)%>%
+                  gsub("N E SOM", "NORTH EAST SOM", .)%>%
+                  str_trim(),
+                year = Time %>%
+                  substr(., start = 1, stop = 4)%>%
+                  as.numeric(.)+1)%>%
+  dplyr::select(v4_2, year, DH_GEOGRAPHY_NAME, sex)
 
+df <- merge(df, le, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
+
+summary(plm(v4_2~lag(percent_sector), data=df[df$sex=="female",], method="within", effect="twoway" ))
 
 one <- ggplot(plotfun[plotfun$SupportSetting=="Nursing",], aes(x = year, y = percent_sector, color = percent_sector)) +
   geom_point(size = 3) +
