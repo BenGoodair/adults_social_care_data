@@ -2,10 +2,11 @@ if (!require("pacman")) install.packages("pacman")
 
 pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
 
-
+####To do - names & check with LE names, 2017####
 
 #rm(list=setdiff(ls(), c("")))
 
+####End of jan update: we have residential care over 65 cleaned - we can do res care under 65 and community services in future#####
 
 options(scipen=999)
 
@@ -868,44 +869,43 @@ asc07 <- all_df %>%
   
   
 
-plotfun <- rbind( asc01[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc02[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc03[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc04[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc05[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc06[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc07[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc08[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc09[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc10[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc11[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc12[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc13[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc14[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc15[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc16[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                  asc17[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision", "year")],
-                 asc18[c("percent_sector", "SupportSetting_Key", "DH_GEOGRAPHY_NAME", "ActivityProvision_Key")]%>%
+plotfun <- rbind( asc01[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc02[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc03[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc04[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc05[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc06[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc07[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc08[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc09[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc10[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc11[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc12[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc13[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc14[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc15[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc16[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                  asc17[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
+                 asc18[c("percent_sector", "SupportSetting_Key", "DH_GEOGRAPHY_NAME", "ActivityProvision_Key","ITEMVALUE")]%>%
                    dplyr::rename(SupportSetting=SupportSetting_Key,
                                  ActivityProvision=ActivityProvision_Key)%>%
                    dplyr::mutate(year=2018),
-                 asc19[c("percent_sector", "SupportSetting_Key", "DH_GEOGRAPHY_NAME", "ActivityProvision_Key")]%>%
+                 asc19[c("percent_sector", "SupportSetting_Key", "DH_GEOGRAPHY_NAME", "ActivityProvision_Key","ITEMVALUE")]%>%
                    dplyr::rename(SupportSetting=SupportSetting_Key,
                                  ActivityProvision=ActivityProvision_Key)%>%
                    dplyr::mutate(year=2019),
-                 asc20[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision")]%>%
+                 asc20[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
                    dplyr::mutate(year=2020),
-                 asc21[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision")]%>%
+                 asc21[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
                    dplyr::mutate(year=2021),
-                 asc22[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision")]%>%
+                 asc22[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
                    dplyr::mutate(year=2022),
-                 asc23[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision")]%>%
+                 asc23[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
                    dplyr::mutate(year=2023)
                  )%>%
   dplyr::filter(ActivityProvision=="External",
                 SupportSetting=="Residential")
 
-library(ggplot2)
 
 df <- plotfun %>%
   dplyr::mutate(DH_GEOGRAPHY_NAME = DH_GEOGRAPHY_NAME %>%
@@ -924,14 +924,17 @@ df <- plotfun %>%
                   gsub("AND DARWEN", "WITH DARWEN", .)%>%
                   gsub("NE SOM", "NORTH EAST SOM", .)%>%
                   gsub("N E SOM", "NORTH EAST SOM", .)%>%
+                  gsub(" THE", "",.)%>%
+                  gsub("BEDFORD BOROUGH", "BEDFORD")%>%
                   str_trim())%>%
-  dplyr::filter(!grepl("TOTAL", DH_GEOGRAPHY_NAME))
+  dplyr::filter(!grepl("TOTAL", DH_GEOGRAPHY_NAME),
+                DH_GEOGRAPHY_NAME!="ENGLAND")
 
 
 #Clean names, merge with deaths...
 
 le <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Outcomes/life-expectancy-by-local-authority-time-series-v1.csv"))%>%
-  dplyr::filter(AgeGroups=="65-69",
+  dplyr::filter(AgeGroups=="60-64",
                 sex=="male")%>%
   dplyr::mutate(DH_GEOGRAPHY_NAME = Geography %>%
                   gsub('%20', " ",.)%>%
@@ -947,6 +950,7 @@ le <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_
                   gsub("UA", "",.)%>%
                   gsub("DARWIN", "DARWEN", .)%>%
                   gsub("AND DARWEN", "WITH DARWEN", .)%>%
+                  gsub("COUNTY DURHAM", "DURHAM",. )%>%
                   gsub("NE SOM", "NORTH EAST SOM", .)%>%
                   gsub("N E SOM", "NORTH EAST SOM", .)%>%
                   str_trim(),
@@ -1025,12 +1029,36 @@ lags <- df %>% dplyr::select(DH_GEOGRAPHY_NAME, year, percent_sector)%>%
 
 df <-  merge(df, lags, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
 
-df <- unique(df)
 
-summary(lm(log(v4_2)~lagged_percent_sector+DH_GEOGRAPHY_NAME+factor(year), data=df ))
+lags2 <- df %>% dplyr::select(DH_GEOGRAPHY_NAME, year, percent_sector)%>%
+  dplyr::rename(lagged_two_percent_sector=percent_sector)%>%
+  dplyr::mutate(year = year+2)
+
+
+df <-  merge(df, lags2, by=c("DH_GEOGRAPHY_NAME", "year"), all.x=T)
+
+
+
+
+df <- unique(df)
+df <- df%>%dplyr::filter(!is.na(DH_GEOGRAPHY_NAME))
+
+
+summary(lm(log(v4_2)~lagged_percent_sector+ITEMVALUE+DH_GEOGRAPHY_NAME+factor(year), data=df ))
+
 summary(lm(log(death_rate_falls)~lagged_percent_sector+DH_GEOGRAPHY_NAME+factor(year), data=df ))
+
 summary(lm(log(as.numeric(deaths_falls)+1)~lagged_percent_sector+DH_GEOGRAPHY_NAME+factor(year), data=df ))
 
+one <- lm((v4_2)~lagged_percent_sector+ITEMVALUE+DH_GEOGRAPHY_NAME+factor(year), data=df )
+
+lmtest::coeftest(one)
+
+clubSandwich::coef_test(one, vcov = "CR2", cluster = df$DH_GEOGRAPHY_NAME, test = "Satterthwaite")
+
+
+one <- plm((v4_2)~lagged_percent_sector+ITEMVALUE, data=df, index = c("DH_GEOGRAPHY_NAME", "year"), method="within", effect="twoway" )
+clubSandwich::coef_test(one, vcov = "CR2", cluster = df$DH_GEOGRAPHY_NAME, test = "Satterthwaite")
 
 
 
