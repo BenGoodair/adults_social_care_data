@@ -30,7 +30,7 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
 # 
 # sooo, I think I clean:
 #   
-# Home care, residential care, nurse care, supported and other for 65+
+# Home care, residential care, nurse care, supported, and other for 65+
 # combined settings for old, young, total.
 
 
