@@ -86,8 +86,17 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
                  Service=="F11")%>%
    dplyr::distinct()%>%
    dplyr::rename(SupportSetting=NA.)%>%
+   dplyr::mutate(SupportSetting = ifelse(SupportSetting=="Home care", "Home care",
+                                         ifelse(SupportSetting=="Nursing home placements", "Nursing home placements",
+                                                ifelse(SupportSetting=="Residential care home placements", "Residential care home placements",
+                                                        ifelse(SupportSetting=="Supported and other accommodation", "Supported and other accommodation",
+                                                             ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC (LINES D1 to D10)", "U65 PHYSICAL DISABILITY",
+                                                                    ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES (LINES E1 to E10)", "U65 LEARNING DISABILITY",
+                                                                            ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS (LINES F1 to F10)", "U65 MENTAL HEALTH",
+                                                                                  ifelse(SupportSetting=="TOTAL OLDER PEOPLE (LINES C1 to C10)", "Total over 65", 
+                                                                                         NA)))))))))%>%
    dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
-   tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME"), names_to = "Sector", values_to = "Expenditure")%>%
+   tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
    dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
                                  ifelse(Sector=="Total", "Total",
                                         "External")),
@@ -116,45 +125,410 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
  # 
  # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\spend_csvs\\sheet_names.csv", row.names = FALSE)
  # 
+ sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2002/spend_csvs/sheet_names.csv"))
  
+ sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+ 
+ 
+ all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2002/spend_csvs/output_Barnsley.csv"), skip=3)%>%
+   dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+   dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+ 
+ 
+ for (i in sheet_names$x) {
+   df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2002/spend_csvs/output_", i, ".csv")), skip=3)%>%
+     dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+     dplyr::mutate(DH_GEOGRAPHY_NAME=i)
+   
+   all_df <- rbind(all_df, df)
+   print(i)
+ }
+ 
+ 
+ asc02 <- all_df %>% 
+   dplyr::filter(Service=="C2"|
+                   Service=="C3"|
+                   Service=="C4"|
+                   Service=="C6"|
+                   Service=="C11"|
+                   Service=="D11"|
+                   Service=="E11"|
+                   Service=="F11")%>%
+   dplyr::distinct()%>%
+   dplyr::rename(SupportSetting=NA.)%>%
+   dplyr::mutate(SupportSetting = ifelse(SupportSetting=="Home care", "Home care",
+                                         ifelse(SupportSetting=="Nursing home placements", "Nursing home placements",
+                                                ifelse(SupportSetting=="Residential care home placements", "Residential care home placements",
+                                                       ifelse(SupportSetting=="Supported and other accommodation","Supported and other accommodation",
+                                                              ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC (LINES D1 to D10)", "U65 PHYSICAL DISABILITY",
+                                                                     ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES (LINES E1 to E10)", "U65 LEARNING DISABILITY",
+                                                                            ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS (LINES F1 to F10)", "U65 MENTAL HEALTH",
+                                                                                   ifelse(SupportSetting=="TOTAL OLDER PEOPLE (LINES C1 to C10)", "Total over 65", NA)))))))))%>%
+   dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+   tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
+   dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
+                                 ifelse(Sector=="Total", "Total",
+                                        "External")),
+                 year=2002,
+                 Expenditure=as.numeric(Expenditure))%>%
+   dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+   dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+   dplyr::ungroup()
  
  
  #2003
  
- excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2003\\spend.xls"
+ # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2003\\spend.xls"
+ # 
+ # excel_sheets <- excel_sheets(excel_path)
+ # 
+ # for (sheet_name in excel_sheets) {
+ #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+ #   
+ #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2003\\spend_csvs\\output_", sheet_name, ".csv")
+ #   
+ #   write.csv(df, file = csv_path, row.names = FALSE)
+ # }
+ # 
+ # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2003\\spend_csvs\\sheet_names.csv", row.names = FALSE)
  
- excel_sheets <- excel_sheets(excel_path)
  
- for (sheet_name in excel_sheets) {
-   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+ sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2003/spend_csvs/sheet_names.csv"))
+ 
+ sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+ 
+ 
+ all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2003/spend_csvs/output_Barnsley.csv"), skip=3)%>%
+   dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+   dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+ 
+ 
+ for (i in sheet_names$x) {
+   df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2003/spend_csvs/output_", i, ".csv")), skip=3)%>%
+     dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+     dplyr::mutate(DH_GEOGRAPHY_NAME=i)
    
-   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2003\\spend_csvs\\output_", sheet_name, ".csv")
-   
-   write.csv(df, file = csv_path, row.names = FALSE)
+   all_df <- rbind(all_df, df)
+   print(i)
  }
  
- write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2003\\spend_csvs\\sheet_names.csv", row.names = FALSE)
+ 
+ asc03 <- all_df %>% 
+   dplyr::filter(Service=="C2"|
+                   Service=="C3"|
+                   Service=="C4"|
+                   Service=="C6"|
+                   Service=="C11"|
+                   Service=="D11"|
+                   Service=="E11"|
+                   Service=="F11")%>%
+   dplyr::distinct()%>%
+   dplyr::rename(SupportSetting=NA.)%>%
+   dplyr::mutate(SupportSetting = ifelse(SupportSetting=="Home care", "Home care",
+                                         ifelse(SupportSetting=="Nursing care placements", "Nursing home placements",
+                                                ifelse(SupportSetting=="Residential care placements", "Residential care home placements",
+                                                       ifelse(SupportSetting=="Supported and other accommodation", "Supported and other accommodation",
+                                                              ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC (LINES D1 to D10)", "U65 PHYSICAL DISABILITY",
+                                                                     ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES (LINES E1 to E10)", "U65 LEARNING DISABILITY",
+                                                                            ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS (LINES F1 to F10)", "U65 MENTAL HEALTH",
+                                                                                   ifelse(SupportSetting=="TOTAL OLDER PEOPLE (LINES C1 to C10)", "Total over 65", NA)))))))))%>%
+   dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+   tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
+   dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
+                                 ifelse(Sector=="Total", "Total",
+                                        "External")),
+                 year=2003,
+                 Expenditure=as.numeric(Expenditure))%>%
+   dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+   dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+   dplyr::ungroup()
+ 
+ 
+ 
  
  #2004
  
- excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\spend.xls"
+ # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\spend.xls"
+ # 
+ # excel_sheets <- excel_sheets(excel_path)
+ # 
+ # for (sheet_name in excel_sheets) {
+ #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+ #   
+ #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\spend_csvs\\output_", sheet_name, ".csv")
+ #   
+ #   write.csv(df, file = csv_path, row.names = FALSE)
+ # }
+ # 
+ # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\spend_csvs\\sheet_names.csv", row.names = FALSE)
+ # 
  
- excel_sheets <- excel_sheets(excel_path)
  
- for (sheet_name in excel_sheets) {
-   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+ sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2004/spend_csvs/sheet_names.csv"))
+ 
+ sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+ 
+ 
+ all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2004/spend_csvs/output_Barnsley.csv"), skip=3)%>%
+   dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+   dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+ 
+ 
+ for (i in sheet_names$x) {
+   df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2004/spend_csvs/output_", i, ".csv")), skip=3)%>%
+     dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+     dplyr::mutate(DH_GEOGRAPHY_NAME=i)
    
-   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\spend_csvs\\output_", sheet_name, ".csv")
-   
-   write.csv(df, file = csv_path, row.names = FALSE)
+   all_df <- rbind(all_df, df)
+   print(i)
  }
  
- write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2004\\spend_csvs\\sheet_names.csv", row.names = FALSE)
+ 
+ asc04 <- all_df %>% 
+   dplyr::filter(Service=="C2"|
+                   Service=="C3"|
+                   Service=="C4"|
+                   Service=="C6"|
+                   Service=="C11"|
+                   Service=="D11"|
+                   Service=="E11"|
+                   Service=="F11")%>%
+   dplyr::distinct()%>%
+   dplyr::rename(SupportSetting=NA.)%>%
+   dplyr::mutate(SupportSetting = ifelse(SupportSetting=="Home care", "Home care",
+                                         ifelse(SupportSetting=="Nursing care placements", "Nursing home placements",
+                                                ifelse(SupportSetting=="Residential care placements", "Residential care home placements",
+                                                       ifelse(SupportSetting=="Supported and other accommodation", "Supported and other accommodation",
+                                                              ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC excl SP (LINES D1 to D10)", "U65 PHYSICAL DISABILITY",
+                                                                     ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES excl SP (LINES E1 to E10)", "U65 LEARNING DISABILITY",
+                                                                            ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS excl SP (LINES F1 to F10)", "U65 MENTAL HEALTH",
+                                                                                   ifelse(SupportSetting=="TOTAL OLDER PEOPLE excluding Supporting People (LINES C1 to C10)", "Total over 65", NA)))))))))%>%
+   dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+   tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
+   dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
+                                 ifelse(Sector=="Total", "Total",
+                                        "External")),
+                 year=2004,
+                 Expenditure=as.numeric(Expenditure))%>%
+   dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+   dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+   dplyr::ungroup()
+ 
+ 
+ 
+ #2005
+ 
+  # 
+  # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2005\\spend.xls"
+  # 
+  # excel_sheets <- excel_sheets(excel_path)
+  # 
+  # for (sheet_name in excel_sheets) {
+  #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+  #   
+  #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2005\\spend_csvs\\output_", sheet_name, ".csv")
+  #   
+  #   write.csv(df, file = csv_path, row.names = FALSE)
+  # }
+  # 
+  # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2005\\spend_csvs\\sheet_names.csv", row.names = FALSE)
+  # 
+  # 
+  
+  sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2005/spend_csvs/sheet_names.csv"))
+  
+  sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+  
+  
+  all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2005/spend_csvs/output_Barnsley.csv"), skip=3)%>%
+    dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+    dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+  
+  
+  for (i in sheet_names$x) {
+    df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2005/spend_csvs/output_", i, ".csv")), skip=3)%>%
+      dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+      dplyr::mutate(DH_GEOGRAPHY_NAME=i)
+    
+    all_df <- rbind(all_df, df)
+    print(i)
+  }
+
+  
+  asc05 <- all_df %>% 
+    dplyr::filter(Service=="C2"|
+                    Service=="C3"|
+                    Service=="C4"|
+                    Service=="C6"|
+                    Service=="C11"|
+                    Service=="D11"|
+                    Service=="E11"|
+                    Service=="F11")%>%
+    dplyr::distinct()%>%
+    dplyr::rename(SupportSetting=NA.)%>%
+    dplyr::mutate(SupportSetting = ifelse(SupportSetting=="Home care", "Home care",
+                                          ifelse(SupportSetting=="Nursing care placements", "Nursing home placements",
+                                                 ifelse(SupportSetting=="Residential care placements", "Residential care home placements",
+                                                        ifelse(SupportSetting=="Supported and other accommodation", "Supported and other accommodation",
+                                                               ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC excl SP (LINES D1 to D10)", "U65 PHYSICAL DISABILITY",
+                                                                      ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES excl SP (LINES E1 to E10)", "U65 LEARNING DISABILITY",
+                                                                             ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS excl SP (LINES F1 to F10)", "U65 MENTAL HEALTH",
+                                                                                    ifelse(SupportSetting=="TOTAL OLDER PEOPLE excluding Supporting People (LINES C1 to C10)", "Total over 65", NA)))))))))%>%
+    dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+    tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
+    dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
+                                  ifelse(Sector=="Total", "Total",
+                                         "External")),
+                  year=2005,
+                  Expenditure=as.numeric(Expenditure))%>%
+    dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+    dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+    dplyr::ungroup()
+  
+ 
+#2006
+  
+   # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2006\\spend.xls"
+   # 
+   # excel_sheets <- excel_sheets(excel_path)
+   # 
+   # for (sheet_name in excel_sheets) {
+   #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+   #   
+   #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2006\\spend_csvs\\output_", sheet_name, ".csv")
+   #   
+   #   write.csv(df, file = csv_path, row.names = FALSE)
+   # }
+   # 
+   # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2006\\spend_csvs\\sheet_names.csv", row.names = FALSE)
+   # 
+  
+  
+  sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2006/spend_csvs/sheet_names.csv"))
+  
+  sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+  
+  
+  all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2006/spend_csvs/output_Barnsley.csv"), skip=3)%>%
+    dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+    dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+  
+  
+  for (i in sheet_names$x) {
+    df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2006/spend_csvs/output_", i, ".csv")), skip=3)%>%
+      dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+      dplyr::mutate(DH_GEOGRAPHY_NAME=i)
+    
+    all_df <- rbind(all_df, df)
+    print(i)
+  }
+  
+  
+  asc05 <- all_df %>% 
+    dplyr::filter(Service=="C2"|
+                    Service=="C3"|
+                    Service=="C4"|
+                    Service=="C6"|
+                    Service=="C11"|
+                    Service=="D11"|
+                    Service=="E11"|
+                    Service=="F11")%>%
+    dplyr::distinct()%>%
+    dplyr::rename(SupportSetting=NA.)%>%
+    dplyr::mutate(SupportSetting = ifelse(SupportSetting=="Home care", "Home care",
+                                          ifelse(SupportSetting=="Nursing care placements", "Nursing home placements",
+                                                 ifelse(SupportSetting=="Residential care placements", "Residential care home placements",
+                                                        ifelse(SupportSetting=="Supported and other accommodation", "Supported and other accommodation",
+                                                               ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC excl SP (LINES D1 to D10)", "U65 PHYSICAL DISABILITY",
+                                                                      ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES excl SP (LINES E1 to E10)", "U65 LEARNING DISABILITY",
+                                                                             ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS excl SP (LINES F1 to F10)", "U65 MENTAL HEALTH",
+                                                                                    ifelse(SupportSetting=="TOTAL OLDER PEOPLE excluding Supporting People (LINES C1 to C10)", "Total over 65", NA)))))))))%>%
+    dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+    tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
+    dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
+                                  ifelse(Sector=="Total", "Total",
+                                         "External")),
+                  year=2006,
+                  Expenditure=as.numeric(Expenditure))%>%
+    dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+    dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+    dplyr::ungroup()
+  
+#2007
+   
+    # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2007\\DetailedPSSByCouncil2006-07 ENG.xls"
+    # 
+    # excel_sheets <- excel_sheets(excel_path)
+    # 
+    # for (sheet_name in excel_sheets) {
+    #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+    #   
+    #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2007\\spend_csvs\\output_", sheet_name, ".csv")
+    #   
+    #   write.csv(df, file = csv_path, row.names = FALSE)
+    # }
+    # 
+    # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2007\\spend_csvs\\sheet_names.csv", row.names = FALSE)
+    # 
+  
+  sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2007/spend_csvs/sheet_names.csv"))
+  
+  sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+  
+  
+  all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2007/spend_csvs/output_Barnsley.csv"), skip=3)%>%
+    dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+    dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+  
+  
+  for (i in sheet_names$x) {
+    df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2007/spend_csvs/output_", i, ".csv")), skip=3)%>%
+      dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+      dplyr::mutate(DH_GEOGRAPHY_NAME=i)
+    
+    all_df <- rbind(all_df, df)
+    print(i)
+  }
+  
+  
+  asc05 <- all_df %>% 
+    dplyr::filter(Service=="C2"|
+                    Service=="C3"|
+                    Service=="C4"|
+                    Service=="C6"|
+                    Service=="C11"|
+                    Service=="D11"|
+                    Service=="E11"|
+                    Service=="F11")%>%
+    dplyr::distinct()%>%
+    dplyr::rename(SupportSetting=NA.)%>%
+    dplyr::mutate(SupportSetting = ifelse(SupportSetting=="Home care", "Home care",
+                                          ifelse(SupportSetting=="Nursing care placements", "Nursing home placements",
+                                                 ifelse(SupportSetting=="Residential care placements", "Residential care home placements",
+                                                        ifelse(SupportSetting=="Supported and other accommodation", "Supported and other accommodation",
+                                                               ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC excl SP (LINES D1 to D10)", "U65 PHYSICAL DISABILITY",
+                                                                      ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES excl SP (LINES E1 to E10)", "U65 LEARNING DISABILITY",
+                                                                             ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS excl SP (LINES F1 to F10)", "U65 MENTAL HEALTH",
+                                                                                    ifelse(SupportSetting=="TOTAL OLDER PEOPLE excluding Supporting People (LINES C1 to C10)", "Total over 65", NA)))))))))%>%
+    dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+    tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
+    dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
+                                  ifelse(Sector=="Total", "Total",
+                                         "External")),
+                  year=2007,
+                  Expenditure=as.numeric(Expenditure))%>%
+    dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+    dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+    dplyr::ungroup()
  
  
  
  ####plotfun####
- one <- ggplot(asc01[asc01$Sector=="External",], aes(x = factor(year), y = percent_sector, color = percent_sector)) +
+ 
+ plotfun <- rbind(asc01,asc02,asc03, asc04)%>%
+   dplyr::mutate(SupportSetting = tolower(SupportSetting))
+ 
+ one <- ggplot(plotfun[plotfun$Sector=="External",], aes(x = year, y = percent_sector, color = percent_sector)) +
    geom_point(size = 3) +
    geom_smooth(method = "loess", se = FALSE) +
    labs(

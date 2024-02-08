@@ -1,0 +1,158 @@
+"PSS EXPENDITURE IN 2004-05 INCL SSMSS COSTS ALLOCATED TO SERVICE LINES ON A PRO-RATA BASIS (Incl SSMSS Sheet)","...2","...3","...4","...5","...6","...7","...8","...9","...10","...11","...12","...13","...14","PSS EX1 Return for 2004-05 Version 1"
+"Check that cell N153 matches total social services expenditure recorded in the authority's accounts and complete cell N156.",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,"GROSS TOTAL COST (Current expenditure including capital charges)",NA,NA,NA,NA,NA,"INCOME",NA,NA,NA,"NET","NET","GROSS"
+"Service",NA,"Own provision (including joint arrangements)",NA,NA,"Provision","Total (including joint arrangements)",NA,"Client","Joint","Other","TOTAL","CURRENT","TOTAL","CURRENT"
+NA,NA,"Expenditure","Capital","Expenditure","by others","Expenditure","Expenditure","contributions","arrangements","income","INCOME","EXPENDITURE","COST","EXPENDITURE"
+NA,NA,"including","charges","excluding",NA,"including","excluding","(Sales,",NA,NA,"(including",NA,NA,NA
+NA,NA,"capital",NA,"capital",NA,"capital","capital","Fees and",NA,NA,"joint",NA,NA,NA
+NA,NA,"charges",NA,"charges",NA,"charges","charges","Charges)",NA,NA,"arrangements)",NA,NA,NA
+"col A","col B","col C","col D","col E = C - D","col F","Col G = C + F","Col H = E + F","col I","col J","col K","col L = (I to K)","col M = H - L","col N = G - L","col O = H - J - K"
+"A:","SERVICE STRATEGY","North Yorkshire",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"A1","Strategic management","373","3","370","0","373","370","0","0","0","0","370","373","370"
+"A2","Complaints procedures","93","1","92","0","93","92","0","0","0","0","92","93","92"
+"A3","TOTAL SERVICE STRATEGY (LINES A1 to A2)","466","4","462","0","466","462","0","0","0","0","462","466","462"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"B:","CHILDREN'S AND FAMILIES SERVICES",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BA:","Children's services - commissioning and social work",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BA1","Commissioning and social work","11517","216","11301","291","11808","11592","0","127","2","129","11463","11679","11463"
+"BA2","Total children's services - commissioning and social work (line BA1)","11517","216","11301","291","11808","11592","0","127","2","129","11463","11679","11463"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BB:","Children looked after",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BB1","Children's homes","1990","91","1899","3534","5524","5433","0","0","0","0","5433","5524","5433"
+"BB2","Secure accommodation (welfare)","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"BB3","Fostering services","3731","11","3720","3089","6820","6809","0","0","0","0","6809","6820","6809"
+"BB4","Other children looked after services","910","0","910","56","966","966","0","0","0","0","966","966","966"
+"BB5","Total children looked after (lines BB1 to BB4)","6631","102","6529","6679","13310","13208","0","0","0","0","13208","13310","13208"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BC:","Family support services",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BC1","Family centres","1619","47","1572","0","1619","1572","0","0","0","0","1572","1619","1572"
+"BC2","Services for under 8s","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"BC3","Direct payments","0","0","0","50","50","50","0","0","0","0","50","50","50"
+"BC4","Home care","178","0","178","58","236","236","0","0","0","0","236","236","236"
+"BC5","Equipment and adaptations","350","3","347","7","357","354","0","6","5","11","343","346","343"
+"BC6","Other family support services","2290","129","2161","2414","4704","4575","0","401","0","401","4174","4303","4174"
+"BC7","Total family support services (lines BC1 to BC6)","4437","179","4258","2529","6966","6787","0","407","5","412","6375","6554","6375"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BD:","Youth justice",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BD1","Secure accommodation (justice)","0","0","0","109","109","109","0","0","0","0","109","109","109"
+"BD2","Youth offender teams","242","0","242","0","242","242","0","0","0","0","242","242","242"
+"BD3","Other youth justice services","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"BD4","Total youth justice (lines BD1 to BD3)","242","0","242","109","351","351","0","0","0","0","351","351","351"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BE:","Other children's and families services",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"BE1","Adoption services","884","14","870","0","884","870","0","0","0","0","870","884","870"
+"BE2","Leaving care services","1038","15","1023","39","1077","1062","1","0","0","1","1061","1076","1062"
+"BE3","Other other children's and families services","186","2","184","487","673","671","0","0","0","0","671","673","671"
+"BE4","Total other children's and families services (lines BE1 to BE3)","2108","31","2077","526","2634","2603","1","0","0","1","2602","2633","2603"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"B1","TOTAL CHILDREN'S AND FAMILIES SERVICES excluding SP (LINES BA2+BB5+BC7+BD4+BE4)","24935","528","24407","10134","35069","34541","1","534","7","542","33999","34527","34000"
+"B2","Supporting People","12","0","12","394","406","406","0","0","0","0","406","406","406"
+"B3","TOTAL CHILDREN'S AND FAMILIES SERVICES including SP (LINES BA2+BB5+BC7+BD4+BE4+B2)","24947","528","24419","10528","35475","34947","1","534","7","542","34405","34933","34406"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C:","OLDER PEOPLE (AGED 65 OR OVER) INCLUDING OLDER MENTALLY ILL",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C1","Assessment and care management","7537","161","7376","144","7681","7520","0","146","33","179","7341","7502","7341"
+"C2","Nursing care placements","0","0","0","22968","22968","22968","7379","275","302","7956","15012","15012","22391"
+"C3","Residential care placements","14778","530","14248","18323","33101","32571","10670","148","198","11016","21555","22085","32225"
+"C4","Supported and other accommodation","341","40","301","0","341","301","0","0","0","0","301","341","301"
+"C5","Direct payments","0","0","0","385","385","385","3","0","0","3","382","382","385"
+"C6","Home care","9625","41","9584","7247","16872","16831","1972","158","131","2261","14570","14611","16542"
+"C7","Day care","2600","52","2548","1003","3603","3551","439","144","0","583","2968","3020","3407"
+"C8","Equipment and adaptations","1502","12","1490","29","1531","1519","2","24","15","41","1478","1490","1480"
+"C9","Meals","838","16","822","143","981","965","550","0","0","550","415","431","965"
+"C10","Other services to older people","1431","34","1397","1064","2495","2461","18","87","0","105","2356","2390","2374"
+"C11","TOTAL OLDER PEOPLE excluding Supporting People (LINES C1 to C10)","38652","886","37766","51306","89958","89072","21033","982","679","22694","66378","67264","87411"
+"C12","Supporting People","108","0","108","3478","3586","3586","0","0","0","0","3586","3586","3586"
+"C13","TOTAL OLDER PEOPLE including Supporting People (LINES C11+C12)","38760","886","37874","54784","93544","92658","21033","982","679","22694","69964","70850","90997"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"D:","ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY OR SENSORY IMPAIRMENT",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"D1","Assessment and care management","1009","4","1005","4","1013","1009","0","25","2","27","982","986","982"
+"D2","Nursing care placements","0","0","0","1786","1786","1786","474","0","256","730","1056","1056","1530"
+"D3","Residential care placements","0","0","0","1201","1201","1201","176","0","1","177","1024","1024","1200"
+"D4","Supported and other accommodation","0","0","0","28","28","28","2","0","0","2","26","26","28"
+"D5","Direct payments","0","0","0","976","976","976","33","0","206","239","737","737","770"
+"D6","Home care","970","5","965","2977","3947","3942","216","673","12","901","3041","3046","3257"
+"D7","Day care","0","0","0","162","162","162","4","0","0","4","158","158","162"
+"D8","Equipment and adaptations","551","5","546","68","619","614","1","10","6","17","597","602","598"
+"D9","Meals","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"D10","Other services to adults with a physical disability or sensory impairment","62","3","59","138","200","197","6","22","0","28","169","172","175"
+"D11","TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC excl SP (LINES D1 to D10)","2592","17","2575","7340","9932","9915","912","730","483","2125","7790","7807","8702"
+"D12","Supporting People (SP)","3","0","3","94","97","97","0","0","0","0","97","97","97"
+"D13","TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC incl SP (LINES D11+ D12)","2595","17","2578","7434","10029","10012","912","730","483","2125","7887","7904","8799"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"E:","ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"E1","Assessment and care management","1729","33","1696","0","1729","1696","0","42","173","215","1481","1514","1481"
+"E2","Nursing care placements","0","0","0","745","745","745","158","349","0","507","238","238","396"
+"E3","Residential care placements","1674","252","1422","9002","10676","10424","1048","1383","44","2475","7949","8201","8997"
+"E4","Supported and other accommodation","778","23","755","9741","10519","10496","271","5066","250","5587","4909","4932","5180"
+"E5","Direct payments","0","0","0","172","172","172","6","0","0","6","166","166","172"
+"E6","Home care","628","2","626","3508","4136","4134","70","1115","5","1190","2944","2946","3014"
+"E7","Day care","4396","440","3956","2520","6916","6476","318","598","68","984","5492","5932","5810"
+"E8","Equipment and adaptations","1","0","1","0","1","1","0","0","0","0","1","1","1"
+"E9","Meals","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"E10","Other services to adults with learning disabilities","492","0","492","745","1237","1237","2","65","67","134","1103","1103","1105"
+"E11","TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES excl SP (LINES E1 to E10)","9698","750","8948","26433","36131","35381","1873","8618","607","11098","24283","25033","26156"
+"E12","Supporting People (SP)","266","0","266","8530","8796","8796","0","0","0","0","8796","8796","8796"
+"E13","TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES incl SP (LINES E11+E12)","9964","750","9214","34963","44927","44177","1873","8618","607","11098","33079","33829","34952"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"F:","ADULTS AGED UNDER 65 WITH  MENTAL HEALTH NEEDS",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"F1","Assessment and care management","1707","17","1690","149","1856","1839","0","47","23","70","1769","1786","1769"
+"F2","Nursing care placements","0","0","0","305","305","305","72","0","62","134","171","171","243"
+"F3","Residential care placements","0","0","0","975","975","975","141","0","20","161","814","814","955"
+"F4","Supported and other accommodation","484","11","473","0","484","473","0","0","315","315","158","169","158"
+"F5","Direct payments","0","0","0","2","2","2","0","0","0","0","2","2","2"
+"F6","Home care","396","0","396","136","532","532","1","59","43","103","429","429","430"
+"F7","Day care","380","60","320","638","1018","958","15","144","0","159","799","859","814"
+"F8","Equipment and adaptations","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"F9","Meals","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"F10","Other services to adults with mental health needs","308","3","305","67","375","372","0","79","37","116","256","259","256"
+"F11","TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS excl SP (LINES F1 to F10)","3275","91","3184","2272","5547","5456","229","329","500","1058","4398","4489","4627"
+"F12","Supporting People (SP)","25","0","25","789","814","814","0","0","0","0","814","814","814"
+"F13","TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS incl SP (LINES F11+F12)","3300","91","3209","3061","6361","6270","229","329","500","1058","5212","5303","5441"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"G:","ASYLUM SEEKERS",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"G1","Assessment and care management","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"G2","Unaccompanied children","2","0","2","0","2","2","0","0","0","0","2","2","2"
+"G3","Families","81","0","81","0","81","81","0","0","0","0","81","81","81"
+"G4","Lone adults","4","0","4","0","4","4","0","0","0","0","4","4","4"
+"G5","TOTAL ASYLUM SEEKERS (LINES G1 to G4)","87","0","87","0","87","87","0","0","0","0","87","87","87"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"H:","OTHER ADULT SERVICES",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"H1","Assessment and care management","0","0","0","0","0","0","0","0","0","0","0","0","0"
+"H2","HIV/AIDS","0","0","0","14","14","14","0","0","0","0","14","14","14"
+"H3","Substance abuse (addictions)","195","0","195","267","462","462","8","3","9","20","442","442","450"
+"H4","Other other adult services","289","0","289","299","588","588","0","0","3","3","585","585","585"
+"H5","TOTAL OTHER ADULT SERVICES excluding Supporting People (LINES H1 to H4)","484","0","484","580","1064","1064","8","3","12","23","1041","1041","1049"
+"H6","Supporting People","1","0","1","17","18","18","0","0","0","0","18","18","18"
+"H7","TOTAL OTHER ADULT SERVICES including Supporting People (LINES H5+H6)","485","0","485","597","1082","1082","8","3","12","23","1059","1059","1067"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"I:","TOTAL PERSONAL SOCIAL SERVICES",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"I1","TOTAL PSS excluding Supporting People (LINES A3+B1+C11+D11+E11+F11+G5+H5)","80189","2276","77913","98065","178254","175978","24056","11196","2288","37540","138438","140714","162494"
+"I2","TOTAL Supporting People (LINES C12+D12+E12+F12+H6)","415","0","415","13302","13717","13717","0","0","0","0","13717","13717","13717"
+"I3","TOTAL PSS including Supporting People (LINES A3+B1+C13+D13+E13+F13+G5+H7)","80604","2276","78328","111367","191971","189695","24056","11196","2288","37540","152155","154431","176211"
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"J1","SUPPORTED EMPLOYMENT",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"196",NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"K1","OTHER NON-PSS EXPENDITURE BY SOCIAL SERVICES DEPARTMENT",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"3155",NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"L1","SPECIFIC GOVERNMENT GRANTS (Inside and outside Aggregated External Finance)",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"41196",NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"M1","ACTUAL TOTAL NET COST (LINES I3+J1+K1-L1)",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"116586",NA
+NA,"(This should match total social services expenditure in the local authority's accounts)",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"Memorandum","ACTUAL TOTAL NET COST on a pre FRS17 basis",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"117335",NA
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"© 2006, NHS Health and Social Care Information Centre, Social Care Statistics. All rights reserved.",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
