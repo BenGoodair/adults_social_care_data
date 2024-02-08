@@ -30,7 +30,7 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
 # 
 # sooo, I think I clean:
 #   
-# Home care, residential care, nurse care, supported, and other for 65+
+# Home care, residential care, nurse care, supported and other for 65+
 # combined settings for old, young, total.
 
 
@@ -55,19 +55,19 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
  # 
  # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2001\\spend_csvs\\sheet_names.csv", row.names = FALSE)
  # 
- # sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2006/council_csvs/sheet_names.csv"))
- # 
- # sheet_names$x <- gsub(" ", "%20", sheet_names$x)
- # 
+  sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2001/spend_csvs/sheet_names.csv"))
+  
+  sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+  
 
- all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2006/council_csvs/output_Barnsley.csv"), skip=1)%>%
-   dplyr::select(dplyr::starts_with("Data"))%>%
+ all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2001/spend_csvs/output_Barnsley.csv"), skip=3)%>%
+   dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
    dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
  
  
  for (i in sheet_names$x) {
-   df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2006/council_csvs/output_", i, ".csv")), skip=1)%>%
-     dplyr::select(dplyr::starts_with("Data"))%>%
+   df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2001/spend_csvs/output_", i, ".csv")), skip=3)%>%
+     dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
      dplyr::mutate(DH_GEOGRAPHY_NAME=i)
    
    all_df <- rbind(all_df, df)
@@ -75,17 +75,26 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
  }
  
  
- asc06 <- all_df %>% 
-   dplyr::filter(Data.item.description=="residents aged 65 and over in own provision residential placements"|
-                   Data.item.description=="residents aged 65 and over in residential placements provided by others" )%>%
+ asc01 <- all_df %>% 
+   dplyr::filter(Service=="C2"|
+                 Service=="C3"|
+                 Service=="C4"|
+                 Service=="C6"|
+                 Service=="C11"|
+                 Service=="D11"|
+                 Service=="E11"|
+                 Service=="F11")%>%
    dplyr::distinct()%>%
-   dplyr::mutate(SupportSetting="Residential",
-                 ActivityProvision = ifelse(Data.item.description=="residents aged 65 and over in own provision residential placements", "In House",
-                                            "External"),
-                 year=2006,
-                 ITEMVALUE=as.numeric(Data.item.data))%>%
-   dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
-   dplyr::mutate(percent_sector = ITEMVALUE /(ITEMVALUE[ActivityProvision == "External"]+ITEMVALUE[ActivityProvision == "In House"])*100) %>%
+   dplyr::rename(SupportSetting=NA.)%>%
+   dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+   tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME"), names_to = "Sector", values_to = "Expenditure")%>%
+   dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
+                                 ifelse(Sector=="Total", "Total",
+                                        "External")),
+                 year=2001,
+                 Expenditure=as.numeric(Expenditure))%>%
+   dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+   dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
    dplyr::ungroup()
  
  
@@ -93,20 +102,20 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
 
 #2002
  
- excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\spend.xls"
- 
- excel_sheets <- excel_sheets(excel_path)
- 
- for (sheet_name in excel_sheets) {
-   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
-   
-   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\spend_csvs\\output_", sheet_name, ".csv")
-   
-   write.csv(df, file = csv_path, row.names = FALSE)
- }
- 
- write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\spend_csvs\\sheet_names.csv", row.names = FALSE)
- 
+ # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\spend.xls"
+ # 
+ # excel_sheets <- excel_sheets(excel_path)
+ # 
+ # for (sheet_name in excel_sheets) {
+ #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+ #   
+ #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\spend_csvs\\output_", sheet_name, ".csv")
+ #   
+ #   write.csv(df, file = csv_path, row.names = FALSE)
+ # }
+ # 
+ # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2002\\spend_csvs\\sheet_names.csv", row.names = FALSE)
+ # 
  
  
  
@@ -144,4 +153,15 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
  
  
  
-
+ ####plotfun####
+ one <- ggplot(asc01[asc01$Sector=="External",], aes(x = factor(year), y = percent_sector, color = percent_sector)) +
+   geom_point(size = 3) +
+   geom_smooth(method = "loess", se = FALSE) +
+   labs(
+     x = "Year",
+     y = "Outsourced spend (%)",
+     title = "Percent of expenditure outsourced",
+     color = "Outsourced %"
+   )+
+   theme_bw()+
+   facet_grid(~SupportSetting)
