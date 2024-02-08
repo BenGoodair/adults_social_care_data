@@ -338,8 +338,7 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
   sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2005/spend_csvs/sheet_names.csv"))
   
   sheet_names$x <- gsub(" ", "%20", sheet_names$x)
-  
-  
+
   all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2005/spend_csvs/output_Barnsley.csv"), skip=3)%>%
     dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
     dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
@@ -380,7 +379,8 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
                                   ifelse(Sector=="Total", "Total",
                                          "External")),
                   year=2005,
-                  Expenditure=as.numeric(Expenditure))%>%
+                  Expenditure=as.numeric(Expenditure),
+                  Expenditure = ifelse(DH_GEOGRAPHY_NAME=="Cheshire"&SupportSetting=="Supported and other accommodation", NA,Expenditure))%>%
     dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
     dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
     dplyr::ungroup()
@@ -410,13 +410,13 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
   
   
   all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2006/spend_csvs/output_Barnsley.csv"), skip=3)%>%
-    dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+    dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision.by.others)%>%
     dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
   
   
   for (i in sheet_names$x) {
     df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2006/spend_csvs/output_", i, ".csv")), skip=3)%>%
-      dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+      dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision.by.others)%>%
       dplyr::mutate(DH_GEOGRAPHY_NAME=i)
     
     all_df <- rbind(all_df, df)
@@ -424,7 +424,7 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
   }
   
   
-  asc05 <- all_df %>% 
+  asc06 <- all_df %>% 
     dplyr::filter(Service=="C2"|
                     Service=="C3"|
                     Service=="C4"|
@@ -443,7 +443,7 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
                                                                       ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES excl SP (LINES E1 to E10)", "U65 LEARNING DISABILITY",
                                                                              ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS excl SP (LINES F1 to F10)", "U65 MENTAL HEALTH",
                                                                                     ifelse(SupportSetting=="TOTAL OLDER PEOPLE excluding Supporting People (LINES C1 to C10)", "Total over 65", NA)))))))))%>%
-    dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+    dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision.by.others)))%>%
     tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
     dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
                                   ifelse(Sector=="Total", "Total",
@@ -477,13 +477,13 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
   
   
   all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2007/spend_csvs/output_Barnsley.csv"), skip=3)%>%
-    dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+    dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision.by.others)%>%
     dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
   
   
   for (i in sheet_names$x) {
     df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2007/spend_csvs/output_", i, ".csv")), skip=3)%>%
-      dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision)%>%
+      dplyr::select(Service, NA., Own.provision..including.joint.arrangements., Provision.by.others)%>%
       dplyr::mutate(DH_GEOGRAPHY_NAME=i)
     
     all_df <- rbind(all_df, df)
@@ -491,7 +491,7 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
   }
   
   
-  asc05 <- all_df %>% 
+  asc07 <- all_df %>% 
     dplyr::filter(Service=="C2"|
                     Service=="C3"|
                     Service=="C4"|
@@ -510,7 +510,7 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
                                                                       ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES excl SP (LINES E1 to E10)", "U65 LEARNING DISABILITY",
                                                                              ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS excl SP (LINES F1 to F10)", "U65 MENTAL HEALTH",
                                                                                     ifelse(SupportSetting=="TOTAL OLDER PEOPLE excluding Supporting People (LINES C1 to C10)", "Total over 65", NA)))))))))%>%
-    dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision)))%>%
+    dplyr::mutate(Total=as.character(as.numeric(Own.provision..including.joint.arrangements.)+as.numeric(Provision.by.others)))%>%
     tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
     dplyr::mutate(Sector = ifelse(Sector=="Own.provision..including.joint.arrangements.", "In House",
                                   ifelse(Sector=="Total", "Total",
@@ -520,13 +520,96 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
     dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
     dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
     dplyr::ungroup()
+  
  
+#2008
+  
+   # excel_path <- "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2008\\DetailedPSSByCouncil2007-08 (values only).xls"
+   # 
+   # excel_sheets <- excel_sheets(excel_path)
+   # 
+   # for (sheet_name in excel_sheets) {
+   #   df <- read_excel(excel_path, sheet = sheet_name, col_types = NULL)
+   #   
+   #   csv_path <- paste0("C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2008\\spend_csvs\\output_", sheet_name, ".csv")
+   #   
+   #   write.csv(df, file = csv_path, row.names = FALSE)
+   # }
+   # 
+   # write.csv(excel_sheets, file = "C:\\Users\\benjamin.goodair\\OneDrive - Nexus365\\Documents\\GitHub\\adults_social_care_data\\Raw_data\\2008\\spend_csvs\\sheet_names.csv", row.names = FALSE)
+   # 
+   
+   
+   
+   
+   sheet_names <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2008/spend_csvs/sheet_names.csv"))
+   
+   sheet_names$x <- gsub(" ", "%20", sheet_names$x)
+   
+   
+   all_df <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2008/spend_csvs/output_106-Gateshead.csv"), skip=3)%>%
+     dplyr::select(Service, NA., Current.expenditure.including.capital.charges, NA..1)%>%
+     dplyr::mutate(DH_GEOGRAPHY_NAME=sheet_names$x[1])
+   
+   
+   for (i in sheet_names$x) {
+     df <- read.csv(curl(paste0("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2008/spend_csvs/output_", i, ".csv")), skip=3)%>%
+       dplyr::select(Service, NA., Current.expenditure.including.capital.charges, NA..1)%>%
+       dplyr::mutate(DH_GEOGRAPHY_NAME=i)
+     
+     all_df <- rbind(all_df, df)
+     print(i)
+   }
+   
+   
+   asc08 <- all_df %>% 
+     dplyr::filter(Service=="B2"|
+                     Service=="B3"|
+                     Service=="B4"|
+                     Service=="B6"|
+                     Service=="B11"|
+                     Service=="C11"|
+                     Service=="D11"|
+                     Service=="E11")%>%
+     dplyr::distinct()%>%
+     dplyr::rename(SupportSetting=NA.)%>%
+     dplyr::mutate(SupportSetting = ifelse(SupportSetting=="Home care", "Home care",
+                                           ifelse(SupportSetting=="Nursing care placements", "Nursing home placements",
+                                                  ifelse(SupportSetting=="Residential care placements", "Residential care home placements",
+                                                         ifelse(SupportSetting=="Supported and other accommodation", "Supported and other accommodation",
+                                                                ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH A PHYSICAL DISABILITY ETC excl SP (LINES C1 to C10)", "U65 PHYSICAL DISABILITY",
+                                                                       ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH LEARNING DISABILITIES excl SP (LINES D1 to D10)", "U65 LEARNING DISABILITY",
+                                                                              ifelse(SupportSetting=="TOTAL ADULTS AGED UNDER 65 WITH MENTAL HEALTH NEEDS excl SP (LINES E1 to E10)", "U65 MENTAL HEALTH",
+                                                                                     ifelse(SupportSetting=="TOTAL OLDER PEOPLE excluding Supporting People (LINES B1 to B10)", "Total over 65", NA)))))))))%>%
+     dplyr::mutate(Total=as.character(as.numeric(Current.expenditure.including.capital.charges)+as.numeric(NA..1)))%>%
+     tidyr::pivot_longer(cols = !c("SupportSetting", "DH_GEOGRAPHY_NAME", "Service"), names_to = "Sector", values_to = "Expenditure")%>%
+     dplyr::mutate(Sector = ifelse(Sector=="Current.expenditure.including.capital.charges", "In House",
+                                   ifelse(Sector=="Total", "Total",
+                                          "External")),
+                   year=2008,
+                   Expenditure=as.numeric(Expenditure))%>%
+     dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+     dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+     dplyr::ungroup()
  
- 
+   
+   
+   
+#2009
+   
+   #ughhhhhhhh
+   
+#2010
+   
+   
+   asc10 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2010/PSSEX_0910_OUTPUT.csv"))
+   
+   
  ####plotfun####
  
- plotfun <- rbind(asc01,asc02,asc03, asc04)%>%
-   dplyr::mutate(SupportSetting = tolower(SupportSetting))
+ plotfun <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08)%>%
+   dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
+     dplyr::filter(SupportSetting!="supported and other accommodation")
  
  one <- ggplot(plotfun[plotfun$Sector=="External",], aes(x = year, y = percent_sector, color = percent_sector)) +
    geom_point(size = 3) +
@@ -539,3 +622,7 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
    )+
    theme_bw()+
    facet_grid(~SupportSetting)
+ 
+ 
+ 
+ 
