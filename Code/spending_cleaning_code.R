@@ -633,11 +633,113 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
                    SupportSetting = Subset,
                    Sector = SubHeading)
      
+tot_sector <- asc10 %>% dplyr::select(DH_GEOGRAPHY_NAME, SupportSetting, Expenditure)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, SupportSetting)%>%
+  dplyr::summarise(Expenditure=sum(Expenditure, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(Sector="Total")
+
+asc10 <- asc10%>%bind_rows(., tot_sector)%>%
+  dplyr::mutate(year=2010)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+  
+
+
+asc11 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2011/Final_Council_Level_Expenditure_Data_2010-11.csv"))%>%
+  dplyr::filter(MainHeading=="1. GROSS TOTAL COST (Current expenditure including capital charges)",
+                Category.Order==2&Subset.Order==22|
+                  Category.Order==2&Subset.Order==5|
+                  Category.Order==2&Subset.Order==6|
+                  Category.Order==2&Subset.Order==7|
+                  Category.Order==2&Subset.Order==8|
+                  Category.Order==5&Subset.Order==23|
+                  Category.Order==6&Subset.Order==24|
+                  Category.Order==7&Subset.Order==25)%>%
+  dplyr::select(council, SubHeading, Subset, Value)%>%
+  dplyr::mutate(year=2011,
+                SubHeading= ifelse(SubHeading=="Own Provision", "In House",
+                                   ifelse(SubHeading=="Provision by Others", "External",SubHeading)),
+                Subset = ifelse(Subset=="Home care", "Home care",
+                                ifelse(Subset=="Nursing and residential care placements total", "Nursing home placements",
+                                       ifelse(Subset=="Residential care placements", "Residential care home placements",
+                                              ifelse(Subset=="Supported and other accommodation", "Supported and other accommodation",
+                                                     ifelse(Subset=="TOTAL ADULTS with PSD, Aged 18 to 64, excluding Supporting People", "U65 PHYSICAL DISABILITY",
+                                                            ifelse(Subset=="TOTAL ADULTS WITH LD, Aged 18 to 64, excluding Supporting People", "U65 LEARNING DISABILITY",
+                                                                   ifelse(Subset=="TOTAL ADULTS WITH MH NEEDS, Aged 18 to 64, excluding Supporting People", "U65 MENTAL HEALTH",
+                                                                          ifelse(Subset=="TOTAL OLDER PEOPLE excluding Supporting People", "Total over 65", NA)))))))))%>%
+  dplyr::group_by(council, SubHeading)%>%
+  dplyr::mutate(Value= ifelse(Subset=="Nursing home placements", Value-Value[Subset=="Residential care home placements"], Value),
+                Service = NA)%>%
+  dplyr::ungroup()%>%
+  dplyr::rename(Expenditure=Value,
+                DH_GEOGRAPHY_NAME = council,
+                SupportSetting = Subset,
+                Sector = SubHeading)
+
+tot_sector <- asc11 %>% dplyr::select(DH_GEOGRAPHY_NAME, SupportSetting, Expenditure)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, SupportSetting)%>%
+  dplyr::summarise(Expenditure=sum(Expenditure, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(Sector="Total")
+
+asc11 <- asc11%>%bind_rows(., tot_sector)%>%
+  dplyr::mutate(year=2011)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+#2012
+
+asc12 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2012/Final_PSS_Expenditure_2011_12_Raw_Data.csv"))%>%
+  dplyr::filter(MainHeading=="1. GROSS TOTAL COST (Current expenditure including capital charges)",
+                Category.Order==2&Subset.Order==22|
+                  Category.Order==2&Subset.Order==5|
+                  Category.Order==2&Subset.Order==6|
+                  Category.Order==2&Subset.Order==7|
+                  Category.Order==2&Subset.Order==8|
+                  Category.Order==5&Subset.Order==23|
+                  Category.Order==6&Subset.Order==24|
+                  Category.Order==7&Subset.Order==25)%>%
+  dplyr::select(council, SubHeading, Subset, Value)%>%
+  dplyr::mutate(year=2012,
+                SubHeading= ifelse(SubHeading=="Own Provision", "In House",
+                                   ifelse(SubHeading=="Provision by Others", "External",SubHeading)),
+                Subset = ifelse(Subset=="Home care", "Home care",
+                                ifelse(Subset=="Nursing and residential care placements total", "Nursing home placements",
+                                       ifelse(Subset=="Residential care placements", "Residential care home placements",
+                                              ifelse(Subset=="Supported and other accommodation", "Supported and other accommodation",
+                                                     ifelse(Subset=="TOTAL ADULTS with PSD, Aged 18 to 64, excluding Supporting People", "U65 PHYSICAL DISABILITY",
+                                                            ifelse(Subset=="TOTAL ADULTS WITH LD, Aged 18 to 64, excluding Supporting People", "U65 LEARNING DISABILITY",
+                                                                   ifelse(Subset=="TOTAL ADULTS WITH MH NEEDS, Aged 18 to 64, excluding Supporting People", "U65 MENTAL HEALTH",
+                                                                          ifelse(Subset=="TOTAL OLDER PEOPLE excluding Supporting People", "Total over 65", NA)))))))))%>%
+  dplyr::group_by(council, SubHeading)%>%
+  dplyr::mutate(Value= ifelse(Subset=="Nursing home placements", Value-Value[Subset=="Residential care home placements"], Value),
+                Service = NA)%>%
+  dplyr::ungroup()%>%
+  dplyr::rename(Expenditure=Value,
+                DH_GEOGRAPHY_NAME = council,
+                SupportSetting = Subset,
+                Sector = SubHeading)
+
+tot_sector <- asc12 %>% dplyr::select(DH_GEOGRAPHY_NAME, SupportSetting, Expenditure)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, SupportSetting)%>%
+  dplyr::summarise(Expenditure=sum(Expenditure, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(Sector="Total")
+
+asc12 <- asc12%>%bind_rows(., tot_sector)%>%
+  dplyr::mutate(year=2012)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting, year) %>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
 
    
  ####plotfun####
  
- plotfun <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08)%>%
+ plotfun <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc10,asc11, asc12)%>%
    dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
      dplyr::filter(SupportSetting!="supported and other accommodation")
  
