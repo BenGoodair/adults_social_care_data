@@ -600,10 +600,40 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
    #ughhhhhhhh
    
 #2010
+####NEED TO CREATE A TOTAL FOR ALL PROVISION TYPES PLZ####   
    
-   
-   asc10 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2010/PSSEX_0910_OUTPUT.csv"))
-   
+   asc10 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2010/PSSEX_0910_OUTPUT.csv"))%>%
+     dplyr::filter(MainHeading=="1. GROSS TOTAL COST (Current expenditure including capital charges)",
+                   Category.Order==2&Subset.Order==22|
+                     Category.Order==2&Subset.Order==5|
+                     Category.Order==2&Subset.Order==6|
+                     Category.Order==2&Subset.Order==7|
+                     Category.Order==2&Subset.Order==8|
+                     Category.Order==5&Subset.Order==23|
+                     Category.Order==6&Subset.Order==24|
+                     Category.Order==7&Subset.Order==25)%>%
+     dplyr::select(council, SubHeading, Subset, Value)%>%
+     dplyr::mutate(year=2010,
+                   SubHeading= ifelse(SubHeading=="Own Provision", "In House",
+                                      ifelse(SubHeading=="Provision by Others", "External",SubHeading)),
+                   Subset = ifelse(Subset=="Home care", "Home care",
+                                     ifelse(Subset=="Nursing and residential care placements total", "Nursing home placements",
+                                            ifelse(Subset=="Residential care placements", "Residential care home placements",
+                                                   ifelse(Subset=="Supported and other accommodation", "Supported and other accommodation",
+                                                          ifelse(Subset=="TOTAL ADULTS with PSD, Aged 18 to 64, excluding Supporting People", "U65 PHYSICAL DISABILITY",
+                                                                 ifelse(Subset=="TOTAL ADULTS WITH LD, Aged 18 to 64, excluding Supporting People", "U65 LEARNING DISABILITY",
+                                                                        ifelse(Subset=="TOTAL ADULTS WITH MH NEEDS, Aged 18 to 64, excluding Supporting People", "U65 MENTAL HEALTH",
+                                                                               ifelse(Subset=="TOTAL OLDER PEOPLE excluding Supporting People", "Total over 65", NA)))))))))%>%
+     dplyr::group_by(council, SubHeading)%>%
+     dplyr::mutate(Value= ifelse(Subset=="Nursing home placements", Value-Value[Subset=="Residential care home placements"], Value),
+                   Service = NA)%>%
+   dplyr::ungroup()%>%
+     dplyr::rename(Expenditure=Value,
+                   DH_GEOGRAPHY_NAME = council,
+                   SupportSetting = Subset,
+                   Sector = SubHeading)
+     
+
    
  ####plotfun####
  
