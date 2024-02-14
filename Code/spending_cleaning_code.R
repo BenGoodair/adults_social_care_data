@@ -919,6 +919,18 @@ six <- asc16%>%dplyr::filter(Age.Band=="Age 65 and over")%>%
   dplyr::select(-Long.Term.Support.Setting)
 
 #ugh lazy, replaced minus values with zero
+
+
+six <- six %>%
+  dplyr::select(-SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, Sector)%>%
+  dplyr::summarise(Value=sum(Value, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(SupportSetting="Total over 65")%>%
+  dplyr::bind_rows(., six)
+  
+
+
   
 sixtot <- six %>%
   dplyr::select(-Sector)%>%
@@ -1017,11 +1029,408 @@ sixtot <- six %>%
 asc17 <- rbind(sixtot, eightot)
 
 
+#2018
+
+asc18 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/Copy%20of%20ASCFR%20Data%20File%20(with%20descriptions)_2018.csv"))%>%
+  dplyr::filter(FinanceType_Key=="Expenditure")
+
+eight <- asc18%>%dplyr::filter(AgeBand_Key=="18 to 64")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription_Key,PrimarySupportReason_Key, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription_Key,PrimarySupportReason_Key)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(PrimarySupportReason_Key=="Learning Disability Support", "U65 LEARNING DISABILITY",
+                                       ifelse(PrimarySupportReason_Key=="Physical Support", "U65 PHYSICAL DISABILITY",
+                                              ifelse(PrimarySupportReason_Key=="Mental Health Support", "U65 MENTAL HEALTH",
+                                                     NA))),
+                FinanceDescription_Key = ifelse(FinanceDescription_Key=="Own Provision", "In House",
+                                         ifelse(FinanceDescription_Key=="Provision by Others", "External",
+                                                ifelse(FinanceDescription_Key=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription_Key)%>%
+  dplyr::select(-PrimarySupportReason_Key)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2018,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+
+
+
+six <- asc18%>%dplyr::filter(AgeBand_Key=="65 and Over")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription_Key,SupportSetting_Key, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription_Key,SupportSetting_Key)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(SupportSetting_Key=="Community: Home Care", "home care",
+                                       ifelse(SupportSetting_Key=="Supported Accommodation", "Supported and other accommodation",
+                                              ifelse(SupportSetting_Key=="Residential", "Residential care home placements",
+                                                     ifelse(SupportSetting_Key=="Nursing", "Nursing home placements",
+                                                            NA)))),
+                FinanceDescription_Key = ifelse(FinanceDescription_Key=="Own Provision", "In House",
+                                                ifelse(FinanceDescription_Key=="Provision by Others", "External",
+                                                       ifelse(FinanceDescription_Key=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription_Key)%>%
+  dplyr::select(-SupportSetting_Key)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2018,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+#ugh lazy, replaced minus values with zero
+
+
+asc18 <- rbind(six, eight)
+
+
+
+
+#2019
+
+asc19 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2019.csv"))%>%
+  dplyr::filter(FinanceType_Key=="Expenditure")
+
+eight <- asc19%>%dplyr::filter(AgeBand_Key=="18 to 64")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription_Key,PrimarySupportReason_Key, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription_Key,PrimarySupportReason_Key)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(PrimarySupportReason_Key=="Learning Disability Support", "U65 LEARNING DISABILITY",
+                                       ifelse(PrimarySupportReason_Key=="Physical Support", "U65 PHYSICAL DISABILITY",
+                                              ifelse(PrimarySupportReason_Key=="Mental Health Support", "U65 MENTAL HEALTH",
+                                                     NA))),
+                FinanceDescription_Key = ifelse(FinanceDescription_Key=="Own Provision", "In House",
+                                                ifelse(FinanceDescription_Key=="Provision by Others", "External",
+                                                       ifelse(FinanceDescription_Key=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription_Key)%>%
+  dplyr::select(-PrimarySupportReason_Key)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2019,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+
+
+
+six <- asc19%>%dplyr::filter(AgeBand_Key=="65 and Over")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription_Key,SupportSetting_Key, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription_Key,SupportSetting_Key)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(SupportSetting_Key=="Community: Home Care", "home care",
+                                       ifelse(SupportSetting_Key=="Supported Accommodation", "Supported and other accommodation",
+                                              ifelse(SupportSetting_Key=="Residential", "Residential care home placements",
+                                                     ifelse(SupportSetting_Key=="Nursing", "Nursing home placements",
+                                                            NA)))),
+                FinanceDescription_Key = ifelse(FinanceDescription_Key=="Own Provision", "In House",
+                                                ifelse(FinanceDescription_Key=="Provision by Others", "External",
+                                                       ifelse(FinanceDescription_Key=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription_Key)%>%
+  dplyr::select(-SupportSetting_Key)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2019,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+#ugh lazy, replaced minus values with zero
+
+
+asc19 <- rbind(six, eight)
+
+
+
+
+#2020
+
+asc20 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2020.csv"))%>%
+  dplyr::filter(FinanceType=="Expenditure")
+
+eight <- asc20%>%dplyr::filter(AgeBand=="18 to 64")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription,PrimarySupportReason, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription,PrimarySupportReason)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(PrimarySupportReason=="Learning Disability Support", "U65 LEARNING DISABILITY",
+                                       ifelse(PrimarySupportReason=="Physical Support", "U65 PHYSICAL DISABILITY",
+                                              ifelse(PrimarySupportReason=="Mental Health Support", "U65 MENTAL HEALTH",
+                                                     NA))),
+                FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
+                                                ifelse(FinanceDescription=="Provision by Others", "External",
+                                                       ifelse(FinanceDescription=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::select(-PrimarySupportReason)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2020,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+
+
+
+six <- asc20%>%dplyr::filter(AgeBand=="65 and Over")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription,SupportSetting, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription,SupportSetting)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(SupportSetting=="Community: Home Care", "home care",
+                                       ifelse(SupportSetting=="Supported Accommodation", "Supported and other accommodation",
+                                              ifelse(SupportSetting=="Residential", "Residential care home placements",
+                                                     ifelse(SupportSetting=="Nursing", "Nursing home placements",
+                                                            NA)))),
+                FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
+                                                ifelse(FinanceDescription=="Provision by Others", "External",
+                                                       ifelse(FinanceDescription=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2020,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+#ugh lazy, replaced minus values with zero
+
+
+asc20 <- rbind(six, eight)
+
+
+
+
+
+#2021
+
+asc21 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2021.csv"))%>%
+  dplyr::filter(FinanceType=="Expenditure")
+
+eight <- asc21%>%dplyr::filter(AgeBand=="18 to 64")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription,PrimarySupportReason, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription,PrimarySupportReason)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(PrimarySupportReason=="Learning Disability Support", "U65 LEARNING DISABILITY",
+                                       ifelse(PrimarySupportReason=="Physical Support", "U65 PHYSICAL DISABILITY",
+                                              ifelse(PrimarySupportReason=="Mental Health Support", "U65 MENTAL HEALTH",
+                                                     NA))),
+                FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
+                                            ifelse(FinanceDescription=="Provision by Others", "External",
+                                                   ifelse(FinanceDescription=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::select(-PrimarySupportReason)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2021,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+
+
+
+six <- asc21%>%dplyr::filter(AgeBand=="65 and Over")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription,SupportSetting, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription,SupportSetting)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(SupportSetting=="Community: Home Care", "home care",
+                                       ifelse(SupportSetting=="Supported Accommodation", "Supported and other accommodation",
+                                              ifelse(SupportSetting=="Residential", "Residential care home placements",
+                                                     ifelse(SupportSetting=="Nursing", "Nursing home placements",
+                                                            NA)))),
+                FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
+                                            ifelse(FinanceDescription=="Provision by Others", "External",
+                                                   ifelse(FinanceDescription=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2021,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+#ugh lazy, replaced minus values with zero
+
+
+asc21 <- rbind(six, eight)
+
+
+
+#2022
+
+
+asc22 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2022.csv"))%>%
+  dplyr::filter(FinanceType=="Expenditure")
+
+eight <- asc22%>%dplyr::filter(AgeBand=="18 to 64")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription,PrimarySupportReason, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription,PrimarySupportReason)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(PrimarySupportReason=="Learning Disability Support", "U65 LEARNING DISABILITY",
+                                       ifelse(PrimarySupportReason=="Physical Support", "U65 PHYSICAL DISABILITY",
+                                              ifelse(PrimarySupportReason=="Mental Health Support", "U65 MENTAL HEALTH",
+                                                     NA))),
+                FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
+                                            ifelse(FinanceDescription=="Provision by Others", "External",
+                                                   ifelse(FinanceDescription=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::select(-PrimarySupportReason)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2022,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+
+
+
+six <- asc22%>%dplyr::filter(AgeBand=="65 and Over")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription,SupportSetting, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription,SupportSetting)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(SupportSetting=="Community: Home Care", "home care",
+                                       ifelse(SupportSetting=="Supported Accommodation", "Supported and other accommodation",
+                                              ifelse(SupportSetting=="Residential", "Residential care home placements",
+                                                     ifelse(SupportSetting=="Nursing", "Nursing home placements",
+                                                            NA)))),
+                FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
+                                            ifelse(FinanceDescription=="Provision by Others", "External",
+                                                   ifelse(FinanceDescription=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2022,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+#ugh lazy, replaced minus values with zero
+
+
+asc22 <- rbind(six, eight)
+
+#2023
+
+
+asc23 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2023.csv"))%>%
+  dplyr::filter(FinanceType=="Expenditure")
+
+eight <- asc23%>%dplyr::filter(AgeBand=="18 to 64")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription,PrimarySupportReason, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription,PrimarySupportReason)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(PrimarySupportReason=="Learning Disability Support", "U65 LEARNING DISABILITY",
+                                       ifelse(PrimarySupportReason=="Physical Support", "U65 PHYSICAL DISABILITY",
+                                              ifelse(PrimarySupportReason=="Mental Health Support", "U65 MENTAL HEALTH",
+                                                     NA))),
+                FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
+                                            ifelse(FinanceDescription=="Provision by Others", "External",
+                                                   ifelse(FinanceDescription=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::select(-PrimarySupportReason)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2023,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+
+
+
+six <- asc23%>%dplyr::filter(AgeBand=="65 and Over")%>%
+  dplyr::select(DH_GEOGRAPHY_NAME,FinanceDescription,SupportSetting, ITEMVALUE)%>%
+  dplyr::mutate(ITEMVALUE=as.numeric(ITEMVALUE))%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,FinanceDescription,SupportSetting)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(ITEMVALUE=ifelse(ITEMVALUE<0,0,ITEMVALUE),
+                SupportSetting= ifelse(SupportSetting=="Community: Home Care", "home care",
+                                       ifelse(SupportSetting=="Supported Accommodation", "Supported and other accommodation",
+                                              ifelse(SupportSetting=="Residential", "Residential care home placements",
+                                                     ifelse(SupportSetting=="Nursing", "Nursing home placements",
+                                                            NA)))),
+                FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
+                                            ifelse(FinanceDescription=="Provision by Others", "External",
+                                                   ifelse(FinanceDescription=="99", "Total", NA))))%>%
+  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::filter(!is.na(Sector),
+                !is.na(SupportSetting))%>%
+  dplyr::mutate(year=2023,
+                Service=NA)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME,SupportSetting) %>%
+  dplyr::rename(Expenditure=ITEMVALUE)%>%
+  dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
+  dplyr::ungroup()
+
+#ugh lazy, replaced minus values with zero
+
+
+asc23 <- rbind(six, eight)
+
+
+
 
 
  ####plotfun####
  
- plotfun <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc10,asc11, asc12,asc13, asc14, asc15, asc16,asc17)%>%
+ plotfun <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc10,asc11, asc12,
+                  asc13, asc14, asc15, asc16,asc17, asc18, asc19, asc20, asc21, asc22, asc23)%>%
    dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
      dplyr::filter(SupportSetting!="supported and other accommodation")
  
