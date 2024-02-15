@@ -597,7 +597,12 @@ pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
    
 #2009
    
-   #ughhhhhhhh
+   asc09 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2009/pers-soc-serv-exp-unit-cost-eng-2008-09-units%20(1).csv"), skip=2)%>%
+     dplyr::rename(residential_total=Gross.total.cost.for.residential.care.for.older.people.during.year.ended.31.March...000.s.,
+                   residential_public = Gross.total.cost.for.own.provision.residential.care.for.older.people.during.year.ended.31.March...000.s.,
+                   residential_private = Gross.total.cost.for.residential.care.for.older.people.provided.by.others.during.year.ended.31.March...000.s.,
+                   home_total = )
+   
    
 #2010
 ####NEED TO CREATE A TOTAL FOR ALL PROVISION TYPES PLZ####   
@@ -1008,6 +1013,13 @@ six <- asc17%>%dplyr::filter(AgeBand_KEY==2)%>%
                 DH_GEOGRAPHY_NAME = CASSR_CODE)%>%
   dplyr::select(-SupportSetting_KEY)
 
+six <- six %>%
+  dplyr::select(-SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, Sector)%>%
+  dplyr::summarise(ItemValue=sum(ItemValue, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(SupportSetting="Total over 65")%>%
+  dplyr::bind_rows(., six)
 #ugh lazy, replaced minus values with zero
 
 sixtot <- six %>%
@@ -1078,7 +1090,17 @@ six <- asc18%>%dplyr::filter(AgeBand_Key=="65 and Over")%>%
                                                 ifelse(FinanceDescription_Key=="Provision by Others", "External",
                                                        ifelse(FinanceDescription_Key=="99", "Total", NA))))%>%
   dplyr::rename(Sector=FinanceDescription_Key)%>%
-  dplyr::select(-SupportSetting_Key)%>%
+  dplyr::select(-SupportSetting_Key)
+
+
+
+six <- six %>%
+  dplyr::select(-SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, Sector)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(SupportSetting="Total over 65")%>%
+  dplyr::bind_rows(., six)%>%
   dplyr::filter(!is.na(Sector),
                 !is.na(SupportSetting))%>%
   dplyr::mutate(year=2018,
@@ -1145,7 +1167,16 @@ six <- asc19%>%dplyr::filter(AgeBand_Key=="65 and Over")%>%
                                                 ifelse(FinanceDescription_Key=="Provision by Others", "External",
                                                        ifelse(FinanceDescription_Key=="99", "Total", NA))))%>%
   dplyr::rename(Sector=FinanceDescription_Key)%>%
-  dplyr::select(-SupportSetting_Key)%>%
+  dplyr::select(-SupportSetting_Key)
+
+
+six <- six %>%
+  dplyr::select(-SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, Sector)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(SupportSetting="Total over 65")%>%
+  dplyr::bind_rows(., six)%>%
   dplyr::filter(!is.na(Sector),
                 !is.na(SupportSetting))%>%
   dplyr::mutate(year=2019,
@@ -1211,7 +1242,15 @@ six <- asc20%>%dplyr::filter(AgeBand=="65 and Over")%>%
                 FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
                                                 ifelse(FinanceDescription=="Provision by Others", "External",
                                                        ifelse(FinanceDescription=="99", "Total", NA))))%>%
-  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::rename(Sector=FinanceDescription)
+
+six <- six %>%
+  dplyr::select(-SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, Sector)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(SupportSetting="Total over 65")%>%
+  dplyr::bind_rows(., six)%>%
   dplyr::filter(!is.na(Sector),
                 !is.na(SupportSetting))%>%
   dplyr::mutate(year=2020,
@@ -1278,7 +1317,15 @@ six <- asc21%>%dplyr::filter(AgeBand=="65 and Over")%>%
                 FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
                                             ifelse(FinanceDescription=="Provision by Others", "External",
                                                    ifelse(FinanceDescription=="99", "Total", NA))))%>%
-  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::rename(Sector=FinanceDescription)
+
+six <- six %>%
+  dplyr::select(-SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, Sector)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(SupportSetting="Total over 65")%>%
+  dplyr::bind_rows(., six)%>%
   dplyr::filter(!is.na(Sector),
                 !is.na(SupportSetting))%>%
   dplyr::mutate(year=2021,
@@ -1344,7 +1391,15 @@ six <- asc22%>%dplyr::filter(AgeBand=="65 and Over")%>%
                 FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
                                             ifelse(FinanceDescription=="Provision by Others", "External",
                                                    ifelse(FinanceDescription=="99", "Total", NA))))%>%
-  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::rename(Sector=FinanceDescription)
+
+six <- six %>%
+  dplyr::select(-SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, Sector)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(SupportSetting="Total over 65")%>%
+  dplyr::bind_rows(., six)%>%
   dplyr::filter(!is.na(Sector),
                 !is.na(SupportSetting))%>%
   dplyr::mutate(year=2022,
@@ -1408,7 +1463,15 @@ six <- asc23%>%dplyr::filter(AgeBand=="65 and Over")%>%
                 FinanceDescription = ifelse(FinanceDescription=="Own Provision", "In House",
                                             ifelse(FinanceDescription=="Provision by Others", "External",
                                                    ifelse(FinanceDescription=="99", "Total", NA))))%>%
-  dplyr::rename(Sector=FinanceDescription)%>%
+  dplyr::rename(Sector=FinanceDescription)#
+
+six <- six %>%
+  dplyr::select(-SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, Sector)%>%
+  dplyr::summarise(ITEMVALUE=sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(SupportSetting="Total over 65")%>%
+  dplyr::bind_rows(., six)%>%
   dplyr::filter(!is.na(Sector),
                 !is.na(SupportSetting))%>%
   dplyr::mutate(year=2023,
@@ -1432,7 +1495,8 @@ asc23 <- rbind(six, eight)
  plotfun <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc10,asc11, asc12,
                   asc13, asc14, asc15, asc16,asc17, asc18, asc19, asc20, asc21, asc22, asc23)%>%
    dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
-     dplyr::filter(SupportSetting!="supported and other accommodation")
+     dplyr::filter(SupportSetting!="supported and other accommodation",
+                   SupportSetting!="nursing home placements")
  
  ggplot(plotfun[plotfun$Sector=="External",], aes(x = year, y = percent_sector, color = percent_sector)) +
    geom_point(size = 3) +
