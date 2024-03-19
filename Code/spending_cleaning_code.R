@@ -1500,34 +1500,128 @@ asc23 <- rbind(six, eight)
 
 
 
+fulldata <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc09, asc10,asc11, asc12,
+                  asc13, asc14, asc15, asc16,asc17, asc18, asc19, asc20, asc21, asc22, asc23)%>%
+  dplyr::mutate(DH_GEOGRAPHY_NAME = DH_GEOGRAPHY_NAME %>%
+                  gsub('%20', " ",.)%>%
+                  gsub('&', 'and', .) %>%
+                  gsub('[[:punct:] ]+', ' ', .) %>%
+                  #gsub('[0-9]', '', .)%>%
+                  toupper() %>%
+                  gsub("CITY OF", "",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("COUNTY OF", "",.)%>%
+                  gsub("ROYAL BOROUGH OF", "",.)%>%
+                  gsub("LEICESTER CITY", "LEICESTER",.)%>%
+                  gsub("UA", "",.)%>%
+                  gsub("DARWIN", "DARWEN", .)%>%
+                  gsub("AND DARWEN", "WITH DARWEN", .)%>%
+                  gsub("NE SOM", "NORTH EAST SOM", .)%>%
+                  gsub("N E SOM", "NORTH EAST SOM", .)%>%
+                  gsub(" THE", "",.)%>%
+                  gsub("BEDFORD BOROUGH", "BEDFORD",.)%>%
+                  str_trim())%>%
+  dplyr::filter(!grepl("TOTAL", DH_GEOGRAPHY_NAME),
+                DH_GEOGRAPHY_NAME!="ENGLAND",
+                DH_GEOGRAPHY_NAME!="")
+
+write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
+
+sum(fulldata[fulldata$Sector=="Total",]$Expenditure, na.rm=T)
 
 
  ####plotfun####
  
- plotfun <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc09, asc10,asc11, asc12,
-                  asc13, asc14, asc15, asc16,asc17, asc18, asc19, asc20, asc21, asc22, asc23)%>%
+ plotfun <-fulldata %>%
    dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
      dplyr::filter(SupportSetting!="supported and other accommodation",
                    SupportSetting!="nursing home placements", 
                    SupportSetting!="direct payments",
                    SupportSetting!="total under 65",
-                   SupportSetting!="u65 total")
- 
- ggplot(plotfun[plotfun$Sector=="External",], aes(x = year, y = percent_sector, color = percent_sector)) +
-   geom_point(size = 3) +
-   geom_smooth(method = "loess", se = FALSE) +
-   labs(
-     x = "Year",
-     y = "Outsourced spend (%)",
-     title = "Percent of expenditure outsourced",
-     color = "Outsourced %"
-   )+
-   theme_bw()+
-   facet_wrap(~SupportSetting,nrow = 2)
+                   SupportSetting!="u65 total")%>%
+  dplyr::mutate(SupportSetting= ifelse(SupportSetting=="home care", "Home Care",
+                                       ifelse(SupportSetting=="residential care home placements", "Residential Care",
+                                              ifelse(SupportSetting=="total over 65", "Total",
+                                                     ifelse(SupportSetting=="u65 learning disability", "Learning Disability Support",
+                                                            ifelse(SupportSetting=="u65 physical disability", "Physical Disability Support",
+                                                                   ifelse(SupportSetting=="u65 mental health", "Mental Health Support",SupportSetting)))))))
+
+plot1 <- plotfun %>%dplyr::filter(Sector=="In House",
+                                  SupportSetting=="Total"|
+                                    SupportSetting=="Home Care"|
+                                    SupportSetting=="Residential Care")%>%
+  ggplot(., aes(x = year, y = percent_sector)) +
+  geom_point(size = 2, color = "#B4CFEE", alpha = 0.3) +
+  geom_smooth(method = "loess", se = FALSE, colour = "#2A6EBB") +
+  labs(
+    x = "Year",
+    y = "In House Expenditure (%)",
+    title = "Aged 65 and over",
+    color = ""
+  )+
+  theme_bw()+
+  facet_wrap(~SupportSetting,nrow = 1)+
+  theme(text = element_text(size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.ticks.length=unit(.28, "cm"),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line = element_line(colour = "black"),
+        axis.title = element_text(size=24),
+        axis.text.x = element_text(size=18),
+        axis.text.y = element_text(size=20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(colour = "black", size = 1),
+        legend.text = element_text(size=20),
+        legend.position = "top",
+        strip.background = element_rect(fill="gray90", colour="black", size=1),
+        strip.text = element_text(face="bold", size=16),
+        title=element_text(face="bold")) +
+  theme(panel.spacing.x = unit(4, "mm"))
+
+plot2 <- plotfun %>%dplyr::filter(Sector=="In House",
+                                  SupportSetting=="Learning Disability Support"|
+                                    SupportSetting=="Physical Disability Support"|
+                                    SupportSetting=="Mental Health Support")%>%
+  ggplot(., aes(x = year, y = percent_sector)) +
+  geom_point(size = 2, color = "#B4CFEE", alpha = 0.3) +
+  geom_smooth(method = "loess", se = FALSE, colour = "#2A6EBB") +
+  labs(
+    x = "Year",
+    y = "In House Expenditure (%)",
+    title = "Aged 18 to 65",
+    color = ""
+  )+
+  theme_bw()+
+  facet_wrap(~SupportSetting,nrow = 1)+
+  theme(text = element_text(size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.ticks.length=unit(.28, "cm"),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line = element_line(colour = "black"),
+        axis.title = element_text(size=24),
+        axis.text.x = element_text(size=18),
+        axis.text.y = element_text(size=20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(colour = "black", size = 1),
+        legend.text = element_text(size=20),
+        legend.position = "top",
+        strip.background = element_rect(fill="gray90", colour="black", size=1),
+        strip.text = element_text(face="bold", size=16),
+        title=element_text(face="bold")) +
+  theme(panel.spacing.x = unit(4, "mm"))
 
  
- plotfun <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc09, asc10,asc11, asc12,
-                  asc13, asc14, asc15, asc16,asc17, asc18, asc19, asc20, asc21, asc22, asc23)%>%
+
+
+plot <- cowplot::plot_grid(plot1, plot2, labels = c("A", "B"), ncol=1)
+
+ggsave(plot=plot, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1.png", width=20, height=15, dpi=600)
+ 
+ plotfun <- fulldata %>%
    dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
    dplyr::filter(Sector=="Total",
                  DH_GEOGRAPHY_NAME!="",

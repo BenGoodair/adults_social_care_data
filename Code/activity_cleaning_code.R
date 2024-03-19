@@ -205,7 +205,8 @@ total17 <- asc17 %>% dplyr::filter(GEOGRAPHY_CODE!="",
                  SupportSetting = ifelse(SupportSetting=="-", "", SupportSetting)) %>%
    dplyr::ungroup()%>%
    dplyr::mutate(year=2016)%>%
-   dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))
+   dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting),
+                ActivityProvision= ifelse(ActivityProvision=="In house", "In House",ActivityProvision ))
  
 asc15 <- asc15 %>%
   dplyr::filter(Age.category=="Age 65 and over")%>%
@@ -903,7 +904,7 @@ plotfun <- rbind( asc01[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME
                  asc23[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
                    dplyr::mutate(year=2023)
                  )%>%
-  dplyr::filter(ActivityProvision=="External",
+  dplyr::filter(ActivityProvision=="In House",
                 SupportSetting=="Residential")
 
 
@@ -912,7 +913,7 @@ df <- plotfun %>%
                   gsub('%20', " ",.)%>%
                   gsub('&', 'and', .) %>%
                   gsub('[[:punct:] ]+', ' ', .) %>%
-                  gsub('[0-9]', '', .)%>%
+                  #gsub('[0-9]', '', .)%>%
                   toupper() %>%
                   gsub("CITY OF", "",.)%>%
                   gsub("UA", "",.)%>%
@@ -925,10 +926,77 @@ df <- plotfun %>%
                   gsub("NE SOM", "NORTH EAST SOM", .)%>%
                   gsub("N E SOM", "NORTH EAST SOM", .)%>%
                   gsub(" THE", "",.)%>%
-                  gsub("BEDFORD BOROUGH", "BEDFORD")%>%
+                  gsub("BEDFORD BOROUGH", "BEDFORD",.)%>%
                   str_trim())%>%
   dplyr::filter(!grepl("TOTAL", DH_GEOGRAPHY_NAME),
-                DH_GEOGRAPHY_NAME!="ENGLAND")
+                DH_GEOGRAPHY_NAME!="ENGLAND"|year==2017)
+
+
+
+
+
+
+plot1 <- df %>%
+  ggplot(., aes(x = year, y = percent_sector)) +
+  geom_point(size = 2, color = "#B4CFEE", alpha = 0.3) +
+  geom_smooth(method = "loess", se = FALSE, colour = "#2A6EBB") +
+  labs(
+    x = "Year",
+    y = "In House Activity (%)",
+    title = "",
+    color = ""
+  )+
+  theme_bw()+
+  theme(text = element_text(size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.ticks.length=unit(.28, "cm"),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line = element_line(colour = "black"),
+        axis.title = element_text(size=24),
+        axis.text.x = element_text(size=18),
+        axis.text.y = element_text(size=20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(colour = "black", size = 1),
+        legend.text = element_text(size=20),
+        legend.position = "top",
+        strip.background = element_rect(fill="gray90", colour="black", size=1),
+        strip.text = element_text(face="bold", size=16),
+        title=element_text(face="bold")) +
+  theme(panel.spacing.x = unit(4, "mm"))
+
+
+
+ggsave(plot=plot1, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig2.png", width=10, height=7, dpi=600)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #Clean names, merge with deaths...
