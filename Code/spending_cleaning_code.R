@@ -1,6 +1,6 @@
 if (!require("pacman")) install.packages("pacman")
 
-pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl)
+pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl, zoo)
 
 
 #the categories for in and out in 2000s is:
@@ -1527,9 +1527,9 @@ fulldata <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc09, a
 
 write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
 
-sum(fulldata[fulldata$Sector=="Total",]$Expenditure, na.rm=T)
+sum(fulldata[fulldata$Sector=="Total"&fulldata$SupportSetting=="Total over 65",]$Expenditure, na.rm=T)
 
-
+fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
  ####plotfun####
  
  plotfun <-fulldata %>%
@@ -1555,7 +1555,7 @@ plot1 <- plotfun %>%dplyr::filter(Sector=="In House",
   geom_smooth(method = "loess", se = FALSE, colour = "#2A6EBB") +
   labs(
     x = "Year",
-    y = "In House Expenditure (%)",
+    y = "Expenditure on Public Provision (%)",
     title = "Aged 65 and over",
     color = ""
   )+
@@ -1578,18 +1578,18 @@ plot1 <- plotfun %>%dplyr::filter(Sector=="In House",
         strip.background = element_rect(fill="gray90", colour="black", size=1),
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
-  theme(panel.spacing.x = unit(4, "mm"))
+  theme(panel.spacing.x = unit(4, "mm"))+
+  geom_vline(xintercept=c(2014.5), linetype="dashed", colour="lightgrey", size=2)
+
 
 plot2 <- plotfun %>%dplyr::filter(Sector=="In House",
-                                  SupportSetting=="Learning Disability Support"|
-                                    SupportSetting=="Physical Disability Support"|
-                                    SupportSetting=="Mental Health Support")%>%
+                                  SupportSetting=="Learning Disability Support")%>%
   ggplot(., aes(x = year, y = percent_sector)) +
   geom_point(size = 2, color = "#B4CFEE", alpha = 0.3) +
   geom_smooth(method = "loess", se = FALSE, colour = "#2A6EBB") +
   labs(
     x = "Year",
-    y = "In House Expenditure (%)",
+    y = "Expenditure on Public Provision (%)",
     title = "Aged 18 to 65",
     color = ""
   )+
@@ -1619,7 +1619,7 @@ plot2 <- plotfun %>%dplyr::filter(Sector=="In House",
 
 plot <- cowplot::plot_grid(plot1, plot2, labels = c("A", "B"), ncol=1)
 
-ggsave(plot=plot, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1.png", width=20, height=15, dpi=600)
+ggsave(plot=plot1, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1fin.png", width=20, height=8, dpi=600)
  
  plotfun <- fulldata %>%
    dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
@@ -1646,6 +1646,55 @@ ggsave(plot=plot, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Docume
  
  
  
- 
- 
- 
+ ###fig2 
+     
+     
+     
+fig2 <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Children's Care Homes Project/Data/Ben Report Dates.csv")%>%
+  dplyr::select(inspectiondate, overall, ownership)%>%
+  dplyr::mutate(inspectiondate = as.Date(inspectiondate, format =  "%d%b%Y"))%>%
+  dplyr::mutate(good = ifelse(overall=="Good", 1,
+                              ifelse(overall=="Outstanding",1,
+                                     ifelse(overall=="Requires improvement", 0,
+                                            ifelse(overall=="Inadequate", 0,NA)))))%>%
+  dplyr::filter(!is.na(good),
+                !ownership=="")%>%
+  dplyr::arrange(inspectiondate) %>%
+  dplyr::mutate(all=1)%>%
+  dplyr::arrange(inspectiondate) %>%
+  dplyr::group_by(ownership, inspectiondate) %>%
+  dplyr::summarise(
+            good = sum(good),
+            all = sum(all)) %>%
+  dplyr::ungroup() %>%
+  complete(ownership, inspectiondate = seq.Date(min(.$inspectiondate), max(.$inspectiondate), by = "day")) %>%
+  dplyr::group_by(ownership) %>%
+  dplyr::arrange(inspectiondate) %>%
+  dplyr::mutate(rolling_good = zoo::rollapplyr(good, width = 365, FUN = sum, fill = NA, align = "right", na.rm=T)) %>%
+  dplyr::mutate(rolling_all = zoo::rollapplyr(all, width = 365, FUN = sum, fill = NA, align = "right", na.rm=T)) %>%
+  dplyr::mutate(rolling_good_ratio = rolling_good / rolling_all*100)%>%
+  ggplot(., aes(x=inspectiondate, y=rolling_good_ratio, colour=ownership))+
+  geom_line()+
+  labs(x="Year", y="Inspected Good or Outstanding\n(%)", color="Ownership")+
+  theme_bw()+
+  theme(text = element_text(size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.ticks.length=unit(.28, "cm"),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line = element_line(colour = "black"),
+        axis.title = element_text(size=24),
+        axis.text.x = element_text(size=18),
+        axis.text.y = element_text(size=20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(colour = "black", size = 1),
+        legend.text = element_text(size=20),
+        legend.position = "top",
+        strip.background = element_rect(fill="gray90", colour="black", size=1),
+        strip.text = element_text(face="bold", size=16),
+        title=element_text(face="bold")) +
+  theme(panel.spacing.x = unit(4, "mm"))
+
+
+ggsave(plot=fig2, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig3.png", width=15, height=8, dpi=600)

@@ -933,6 +933,7 @@ df <- plotfun %>%
 
 
 
+write.csv(df, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
 
 
 
@@ -942,11 +943,12 @@ plot1 <- df %>%
   geom_smooth(method = "loess", se = FALSE, colour = "#2A6EBB") +
   labs(
     x = "Year",
-    y = "In House Activity (%)",
-    title = "",
+    y = "Residents in Public Care Homes (%)",
+    title = "Aged 65 and over",
     color = ""
   )+
   theme_bw()+
+  facet_wrap(~SupportSetting)+
   theme(text = element_text(size=20),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
@@ -966,8 +968,9 @@ plot1 <- df %>%
         title=element_text(face="bold")) +
   theme(panel.spacing.x = unit(4, "mm"))
 
+yes <- cowplot::plot_grid(plot2,plot1, labels=c("A", "B"))
 
-
+ggsave(plot=yes, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig2fin.png", width=15, height=7, dpi=600)
 ggsave(plot=plot1, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig2.png", width=10, height=7, dpi=600)
 
 
