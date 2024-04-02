@@ -867,8 +867,9 @@ asc07 <- all_df %>%
     dplyr::ungroup()
   
   
+write.csv(plotfun, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity_keep_all.csv")
   
-  
+sum(plotfun[plotfun$SupportSetting=="Residential"&plotfun$ActivityProvision!="99",]$ITEMVALUE, na.rm=T)  
 
 plotfun <- rbind( asc01[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
                   asc02[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
@@ -935,6 +936,7 @@ df <- plotfun %>%
 
 write.csv(df, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
 
+df <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
 
 
 plot1 <- df %>%

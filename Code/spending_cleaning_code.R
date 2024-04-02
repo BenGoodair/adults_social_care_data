@@ -1529,6 +1529,29 @@ write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Git
 
 sum(fulldata[fulldata$Sector=="Total"&fulldata$SupportSetting=="Total over 65",]$Expenditure, na.rm=T)
 
+fulldata %>% dplyr::filter(grepl("HERTFORDSHIRE", DH_GEOGRAPHY_NAME),
+                           Sector=="External",
+                           SupportSetting=="Total over 65")%>%
+  dplyr::select(Expenditure)%>%
+  sum(.,na.rm=T)
+fulldata %>% dplyr::filter(grepl("HERTFORDSHIRE", DH_GEOGRAPHY_NAME),
+                           Sector=="Total",
+                           SupportSetting=="Total over 65")%>%
+  dplyr::select(Expenditure)%>%
+  sum(.,na.rm=T)
+
+fulldata %>% dplyr::filter(grepl("CUMBRIA", DH_GEOGRAPHY_NAME),
+                           Sector=="External",
+                           SupportSetting=="Total over 65")%>%
+  dplyr::select(Expenditure)%>%
+  sum(.,na.rm=T)
+fulldata %>% dplyr::filter(grepl("CUMBRIA", DH_GEOGRAPHY_NAME),
+                           Sector=="Total",
+                           SupportSetting=="Total over 65")%>%
+  dplyr::select(Expenditure)%>%
+  sum(.,na.rm=T)
+
+
 fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
  ####plotfun####
  
