@@ -1,6 +1,6 @@
 if (!require("pacman")) install.packages("pacman")
 
-pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl, zoo)
+pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl, zoo, stringr)
 
 
 #the categories for in and out in 2000s is:
@@ -1527,6 +1527,15 @@ fulldata <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc09, a
 
 write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
 
+
+
+fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
+
+
+
+
+
+
 sum(fulldata[fulldata$Sector=="Total"&fulldata$SupportSetting=="Total over 65",]$Expenditure, na.rm=T)
 
 fulldata %>% dplyr::filter(grepl("HERTFORDSHIRE", DH_GEOGRAPHY_NAME),
@@ -1551,17 +1560,20 @@ fulldata %>% dplyr::filter(grepl("CUMBRIA", DH_GEOGRAPHY_NAME),
   dplyr::select(Expenditure)%>%
   sum(.,na.rm=T)
 
+mean(fulldata[fulldata$Sector=="In House"&fulldata$SupportSetting=="Total over 65"&fulldata$year==2021,]$percent_sector, na.rm=T)
+sum(fulldata[fulldata$Sector=="In House"&fulldata$SupportSetting=="Total over 65"&fulldata$year==2022,]$Expenditure, na.rm=T)
+median(fulldata[fulldata$Sector=="In House"&fulldata$SupportSetting=="home care"&fulldata$year==2023,]$percent_sector, na.rm=T)
 
-fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
+
  ####plotfun####
  
- plotfun <-fulldata %>%
-   dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
-     dplyr::filter(SupportSetting!="supported and other accommodation",
-                   SupportSetting!="nursing home placements", 
-                   SupportSetting!="direct payments",
-                   SupportSetting!="total under 65",
-                   SupportSetting!="u65 total")%>%
+
+
+
+plotfun <-fulldata %>%
+  dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
+  dplyr::filter(SupportSetting=="home care"|
+                SupportSetting=="residential care home placements")%>%
   dplyr::mutate(SupportSetting= ifelse(SupportSetting=="home care", "Home Care",
                                        ifelse(SupportSetting=="residential care home placements", "Residential Care",
                                               ifelse(SupportSetting=="total over 65", "Total",
@@ -1569,21 +1581,32 @@ fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Gi
                                                             ifelse(SupportSetting=="u65 physical disability", "Physical Disability Support",
                                                                    ifelse(SupportSetting=="u65 mental health", "Mental Health Support",SupportSetting)))))))
 
-plot1 <- plotfun %>%dplyr::filter(Sector=="In House",
-                                  SupportSetting=="Total"|
-                                    SupportSetting=="Home Care"|
-                                    SupportSetting=="Residential Care")%>%
-  ggplot(., aes(x = year, y = percent_sector)) +
-  geom_point(size = 2, color = "#B4CFEE", alpha = 0.3) +
-  geom_smooth(method = "loess", se = FALSE, colour = "#2A6EBB") +
+
+plot1 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
+  dplyr::select(-Service, -X, -Sector,-percent_sector, -SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, year)%>%
+  dplyr::summarise(Expenditure_tot_reshom = sum(Expenditure, na.rm = T))%>%
+  dplyr::ungroup()%>%
+  dplyr::left_join(., plotfun, by = c("year", "DH_GEOGRAPHY_NAME"))%>%
+  dplyr::filter(Sector=="In House")%>%
+  dplyr::select(-DH_GEOGRAPHY_NAME, -Service,-Sector, -X,-percent_sector)%>%
+  dplyr::group_by(year, SupportSetting)%>%
+  dplyr::summarise(Expenditure_tot_reshom = sum(Expenditure_tot_reshom, na.rm = T),
+                   Expenditure = sum(Expenditure, na.rm = T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(percent_sector = Expenditure/Expenditure_tot_reshom*100)%>%
+  dplyr::filter(year!=2009)%>%
+  ggplot(., aes(x=year, y=percent_sector, fill=SupportSetting))+
+  geom_area(
+    #stat = "smooth", method = "loess"
+    )+
   labs(
     x = "Year",
     y = "Expenditure on Public Provision (%)",
     title = "Aged 65 and over",
-    color = ""
-  )+
+    color = "")+
   theme_bw()+
-  facet_wrap(~SupportSetting,nrow = 1)+
+  #facet_wrap(~SupportSetting,nrow = 1)+
   theme(text = element_text(size=20),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
@@ -1601,8 +1624,195 @@ plot1 <- plotfun %>%dplyr::filter(Sector=="In House",
         strip.background = element_rect(fill="gray90", colour="black", size=1),
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
-  theme(panel.spacing.x = unit(4, "mm"))+
-  geom_vline(xintercept=c(2014.5), linetype="dashed", colour="lightgrey", size=2)
+  scale_fill_manual(values=c("#2A6EBB","#B4CFEE" ))+
+  geom_vline(xintercept=c(2014.5), colour="black", size=1)
+
+
+
+  
+
+
+plotfun <-fulldata %>%
+  dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
+  dplyr::filter(SupportSetting=="u65 learning disability"|
+                  SupportSetting=="u65 physical disability"|
+                  SupportSetting=="u65 mental health")%>%
+  dplyr::mutate(SupportSetting= ifelse(SupportSetting=="home care", "Home Care",
+                                       ifelse(SupportSetting=="residential care home placements", "Residential Care",
+                                              ifelse(SupportSetting=="total over 65", "Total",
+                                                     ifelse(SupportSetting=="u65 learning disability", "Learning Disability Support",
+                                                            ifelse(SupportSetting=="u65 physical disability", "Physical Disability Support",
+                                                                   ifelse(SupportSetting=="u65 mental health", "Mental Health Support",SupportSetting)))))))
+
+
+
+
+plot2 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
+  dplyr::select(-Service, -X, -Sector,-percent_sector, -SupportSetting)%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, year)%>%
+  dplyr::summarise(Expenditure_tot_reshom = sum(Expenditure, na.rm = T))%>%
+  dplyr::ungroup()%>%
+  dplyr::left_join(., plotfun, by = c("year", "DH_GEOGRAPHY_NAME"))%>%
+  dplyr::filter(Sector=="In House")%>%
+  dplyr::select(-DH_GEOGRAPHY_NAME, -Service,-Sector, -X,-percent_sector)%>%
+  dplyr::group_by(year, SupportSetting)%>%
+  dplyr::summarise(Expenditure_tot_reshom = sum(Expenditure_tot_reshom, na.rm = T),
+                   Expenditure = sum(Expenditure, na.rm = T))%>%
+  dplyr::ungroup()%>%
+  dplyr::mutate(percent_sector = Expenditure/Expenditure_tot_reshom*100)%>%
+  dplyr::filter(year!=2009)%>%
+  ggplot(., aes(x=year, y=percent_sector, fill=SupportSetting))+
+  geom_area(
+    #stat = "smooth", method = "loess"
+    )+
+  labs(
+    x = "Year",
+    y = "Expenditure on Public Provision (%)",
+    title = "Aged 18-65",
+    color = "")+
+  theme_bw()+
+  #facet_wrap(~SupportSetting,nrow = 1)+
+  theme(text = element_text(size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.ticks.length=unit(.28, "cm"),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line = element_line(colour = "black"),
+        axis.title = element_text(size=24),
+        axis.text.x = element_text(size=18),
+        axis.text.y = element_text(size=20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(colour = "black", size = 1),
+        legend.text = element_text(size=20),
+        legend.position = "top",
+        strip.background = element_rect(fill="gray90", colour="black", size=1),
+        strip.text = element_text(face="bold", size=16),
+        title=element_text(face="bold")) +
+  scale_fill_manual(values=c("#2A6EBB","#B4CFEE", "#1F5189" ))+
+  geom_vline(xintercept=c(2014.5), colour="black", size=1)
+
+
+
+
+yes <- cowplot::plot_grid(plot1, plot2, ncol=1, labels = c("A", "B"))
+ggsave(plot=yes, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1rev_nonsmooth.png", width=12, height=16, dpi=600)
+
+
+
+gdp <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/GDP_Deflators_Qtrly_National_Accounts_December_2023_update.csv", skip = 6)[c(2:4)]
+
+gdp <- gdp %>%
+  dplyr::mutate(year = str_replace(Financial.year, "^.{0,5}", ""),
+                year = paste0("20", year),
+                year=as.numeric(year),
+                X2022.23...100 = as.numeric(X2022.23...100),
+                gdp_deflation_multiplier = 100 / X2022.23...100) %>%
+  dplyr::filter(year < 2025)
+
+
+plot3 <-fulldata %>%
+  dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
+  dplyr::filter(SupportSetting=="total over 65",
+                Sector=="In House"|Sector=="External")%>%
+  dplyr::select(-DH_GEOGRAPHY_NAME, -Service, -X,-percent_sector)%>%
+  dplyr::group_by(year, Sector)%>%
+  dplyr::summarise(Expenditure = sum(Expenditure))%>%
+  dplyr::ungroup()%>%
+  left_join(select(gdp, year, gdp_deflation_multiplier), by = "year") %>%
+  mutate(deflated_expenditure = Expenditure * gdp_deflation_multiplier) %>%
+  dplyr::mutate(Sector = ifelse(Sector=="In House", "Public",
+                                "Outsourced"))%>%
+  ggplot(., aes(x=year, y=deflated_expenditure/1000000, fill=Sector))+
+  geom_area(
+   # stat = "smooth", method = "loess"
+    ) +
+  labs(
+    x = "Year",
+    y = "Expenditure on Social Care (£bn)",
+    color = "")+
+  theme_bw()+
+  #facet_wrap(~SupportSetting,nrow = 1)+
+  theme(text = element_text(size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.ticks.length=unit(.28, "cm"),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line = element_line(colour = "black"),
+        axis.title = element_text(size=24),
+        axis.text.x = element_text(size=18),
+        axis.text.y = element_text(size=20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(colour = "black", size = 1),
+        legend.text = element_text(size=20),
+        legend.position = "top",
+        strip.background = element_rect(fill="gray90", colour="black", size=1),
+        strip.text = element_text(face="bold", size=16),
+        title=element_text(face="bold")) +
+  scale_fill_manual(values=c("#2A6EBB","#B4CFEE" ))+
+  scale_color_manual(values=c("#2A6EBB","#B4CFEE" ))+
+  geom_vline(xintercept=c(2014.5), colour="black", size=1)
+  
+
+ggsave(plot=plot3, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig2rev_nonsmooth.png", width=12, height=8, dpi=600)
+
+
+
+
+plot4 <- fulldata %>%
+  dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
+  dplyr::filter(SupportSetting!="supported and other accommodation",
+                SupportSetting!="nursing home placements", 
+                SupportSetting!="direct payments",
+                SupportSetting!="total under 65",
+                SupportSetting!="u65 total")%>%
+  dplyr::mutate(SupportSetting= ifelse(SupportSetting=="home care", "Home Care",
+                                       ifelse(SupportSetting=="residential care home placements", "Residential Care",
+                                              ifelse(SupportSetting=="total over 65", "Total",
+                                                     ifelse(SupportSetting=="u65 learning disability", "Learning Disability Support",
+                                                            ifelse(SupportSetting=="u65 physical disability", "Physical Disability Support",
+                                                                   ifelse(SupportSetting=="u65 mental health", "Mental Health Support",SupportSetting)))))))%>%
+  dplyr::filter(Sector=="In House",
+                                  SupportSetting=="Total")%>%
+  ggplot(., aes(x = factor(year), y = percent_sector)) +
+  #geom_point(size = 2, color = "#B4CFEE", alpha = 0.3) +
+  geom_violin(trim=FALSE, fill="#2A6EBB")+
+  geom_boxplot(width=0.1, fill="white")+
+  labs(
+    x = "Year",
+    y = "Expenditure on Public Provision (%)",
+    title = "",
+    color = ""
+  )+
+  theme_bw()+
+  #facet_wrap(~SupportSetting,nrow = 1)+
+  theme(text = element_text(size=20),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.ticks.length=unit(.28, "cm"),
+        axis.line.x = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line.y = element_line(size = 0.5, linetype = "solid", colour = "black"),
+        axis.line = element_line(colour = "black"),
+        axis.title = element_text(size=24),
+        axis.text.x = element_text(size=18),
+        axis.text.y = element_text(size=20),
+        legend.title = element_blank(),
+        legend.box.background = element_rect(colour = "black", size = 1),
+        legend.text = element_text(size=20),
+        legend.position = "top",
+        strip.background = element_rect(fill="gray90", colour="black", size=1),
+        strip.text = element_text(face="bold", size=16),
+        title=element_text(face="bold")) +
+  theme(panel.spacing.x = unit(4, "mm"))
+
+ggsave(plot=plot4, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig4_vio.png", width=16, height=8, dpi=600)
+
+
+
+
+
+
 
 
 plot2 <- plotfun %>%dplyr::filter(Sector=="In House",
@@ -1642,7 +1852,7 @@ plot2 <- plotfun %>%dplyr::filter(Sector=="In House",
 
 plot <- cowplot::plot_grid(plot1, plot2, labels = c("A", "B"), ncol=1)
 
-ggsave(plot=plot1, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1fin.png", width=20, height=8, dpi=600)
+ggsave(plot=plot1, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1fin.png", width=26, height=8, dpi=600)
  
  plotfun <- fulldata %>%
    dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
@@ -1697,9 +1907,10 @@ fig2 <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Childr
   dplyr::mutate(rolling_all = zoo::rollapplyr(all, width = 365, FUN = sum, fill = NA, align = "right", na.rm=T)) %>%
   dplyr::mutate(rolling_good_ratio = rolling_good / rolling_all*100)%>%
   ggplot(., aes(x=inspectiondate, y=rolling_good_ratio, colour=ownership))+
-  geom_line()+
-  labs(x="Year", y="Inspected Good or Outstanding\n(%)", color="Ownership")+
+  geom_line(size=2)+
+  labs(x="Year", y="Inspected Good or Outstanding (%)", color="Ownership")+
   theme_bw()+
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y")+
   theme(text = element_text(size=20),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
@@ -1717,7 +1928,9 @@ fig2 <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Childr
         strip.background = element_rect(fill="gray90", colour="black", size=1),
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
-  theme(panel.spacing.x = unit(4, "mm"))
+  theme(panel.spacing.x = unit(4, "mm"))+
+  scale_color_manual(values=c("#CD202C","#2A6EBB","#F0AB00" ))
+  
 
 
-ggsave(plot=fig2, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig3.png", width=15, height=8, dpi=600)
+ggsave(plot=fig2, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig3_rev.png", width=15, height=8, dpi=600)
