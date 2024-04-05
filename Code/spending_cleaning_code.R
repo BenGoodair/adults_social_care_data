@@ -1,6 +1,6 @@
 if (!require("pacman")) install.packages("pacman")
 
-pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl, zoo, stringr)
+pacman::p_load(devtools, dplyr, tidyverse, tidyr, stringr,  curl, plm, readxl, zoo, stringr, patchwork)
 
 
 #the categories for in and out in 2000s is:
@@ -1525,11 +1525,11 @@ fulldata <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc09, a
                 DH_GEOGRAPHY_NAME!="ENGLAND",
                 DH_GEOGRAPHY_NAME!="")
 
-write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
+#write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
 
 
 
-fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
+#fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
 
 
 
@@ -1602,7 +1602,7 @@ plot1 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
     )+
   labs(
     x = "Year",
-    y = "Expenditure on Public Provision (%)",
+    y = "",
     title = "Aged 65 and over",
     color = "")+
   theme_bw()+
@@ -1625,7 +1625,7 @@ plot1 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
   scale_fill_manual(values=c("#2A6EBB","#B4CFEE" ))+
-  geom_vline(xintercept=c(2014.5), colour="black", size=1)
+  geom_vline(xintercept=c(2014.5), colour="black", size=0.3)
 
 
 
@@ -1667,7 +1667,7 @@ plot2 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
     )+
   labs(
     x = "Year",
-    y = "Expenditure on Public Provision (%)",
+    y = "",
     title = "Aged 18-65",
     color = "")+
   theme_bw()+
@@ -1690,17 +1690,34 @@ plot2 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
   scale_fill_manual(values=c("#2A6EBB","#B4CFEE", "#1F5189" ))+
-  geom_vline(xintercept=c(2014.5), colour="black", size=1)
+  geom_vline(xintercept=c(2014.5), colour="black", size=0.3)
 
+
+
+# Combine plots with shared Y-axis label
+combined_plot <- cowplot::plot_grid(plot1, plot2, ncol=1, labels=c("A", "B"), rel_heights=c(1,1))
+
+# Add a centered y-axis label
+combined_plot_with_label <- cowplot::ggdraw() +
+  cowplot::draw_label("Expenditure on Public Provision (%)", x = 0.3, y = 0.3, angle = 90, size = 27, hjust = 0, fontface = "bold")+
+  theme(
+    plot.background = element_rect(fill = "white", color = NA)
+  )
+
+
+# Arrange the plots and label vertically
+final_plot <- cowplot::plot_grid(combined_plot_with_label, combined_plot, ncol = 2, rel_widths = c(0.05, 1))
+##ggsave(plot=final_plot, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1rev_nonsmooth_yshare.png", width=12, height=16, dpi=600)
 
 
 
 yes <- cowplot::plot_grid(plot1, plot2, ncol=1, labels = c("A", "B"))
-ggsave(plot=yes, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1rev_nonsmooth.png", width=12, height=16, dpi=600)
+##ggsave(plot=yes, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1rev_nonsmooth.png", width=12, height=16, dpi=600)
 
 
 
-gdp <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/GDP_Deflators_Qtrly_National_Accounts_December_2023_update.csv", skip = 6)[c(2:4)]
+
+gdp <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/GDP_Deflators_Qtrly_National_Accounts_December_2023_update.csv"), skip = 6)[c(2:4)]
 
 gdp <- gdp %>%
   dplyr::mutate(year = str_replace(Financial.year, "^.{0,5}", ""),
@@ -1755,7 +1772,7 @@ plot3 <-fulldata %>%
   geom_vline(xintercept=c(2014.5), colour="black", size=1)
   
 
-ggsave(plot=plot3, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig2rev_nonsmooth.png", width=12, height=8, dpi=600)
+#ggsave(plot=plot3, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig2rev_nonsmooth.png", width=12, height=8, dpi=600)
 
 
 
@@ -1806,7 +1823,7 @@ plot4 <- fulldata %>%
         title=element_text(face="bold")) +
   theme(panel.spacing.x = unit(4, "mm"))
 
-ggsave(plot=plot4, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig4_vio.png", width=16, height=8, dpi=600)
+##ggsave(plot=plot4, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig4_vio.png", width=16, height=8, dpi=600)
 
 
 
@@ -1852,7 +1869,7 @@ plot2 <- plotfun %>%dplyr::filter(Sector=="In House",
 
 plot <- cowplot::plot_grid(plot1, plot2, labels = c("A", "B"), ncol=1)
 
-ggsave(plot=plot1, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1fin.png", width=26, height=8, dpi=600)
+#ggsave(plot=plot1, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1fin.png", width=26, height=8, dpi=600)
  
  plotfun <- fulldata %>%
    dplyr::mutate(SupportSetting = tolower(SupportSetting))%>%
@@ -1933,4 +1950,4 @@ fig2 <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Childr
   
 
 
-ggsave(plot=fig2, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig3_rev.png", width=15, height=8, dpi=600)
+#ggsave(plot=fig2, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig3_rev.png", width=15, height=8, dpi=600)
