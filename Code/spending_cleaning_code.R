@@ -1560,9 +1560,14 @@ fulldata %>% dplyr::filter(grepl("CUMBRIA", DH_GEOGRAPHY_NAME),
   dplyr::select(Expenditure)%>%
   sum(.,na.rm=T)
 
-mean(fulldata[fulldata$Sector=="In House"&fulldata$SupportSetting=="Total over 65"&fulldata$year==2021,]$percent_sector, na.rm=T)
+mean(fulldata[fulldata$Sector=="In House"&fulldata$SupportSetting=="Total over 65"&fulldata$year==2023,]$percent_sector, na.rm=T)
 sum(fulldata[fulldata$Sector=="In House"&fulldata$SupportSetting=="Total over 65"&fulldata$year==2022,]$Expenditure, na.rm=T)
 median(fulldata[fulldata$Sector=="In House"&fulldata$SupportSetting=="home care"&fulldata$year==2023,]$percent_sector, na.rm=T)
+
+((13.7-9.7)/13.7)
+
+((43.6-27.1)/43.6)
+
 
 
  ####plotfun####
@@ -1625,7 +1630,7 @@ plot1 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
   scale_fill_manual(values=c("#2A6EBB","#B4CFEE" ))+
-  geom_vline(xintercept=c(2014.5), colour="black", size=0.3)
+  geom_vline(xintercept=c(2014.5), colour="black", size=0.1)
 
 
 
@@ -1690,7 +1695,7 @@ plot2 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
   scale_fill_manual(values=c("#2A6EBB","#B4CFEE", "#1F5189" ))+
-  geom_vline(xintercept=c(2014.5), colour="black", size=0.3)
+  geom_vline(xintercept=c(2014.5), colour="black", size=0.1)
 
 
 
@@ -1769,7 +1774,7 @@ plot3 <-fulldata %>%
         title=element_text(face="bold")) +
   scale_fill_manual(values=c("#2A6EBB","#B4CFEE" ))+
   scale_color_manual(values=c("#2A6EBB","#B4CFEE" ))+
-  geom_vline(xintercept=c(2014.5), colour="black", size=1)
+  geom_vline(xintercept=c(2014.5), colour="black", size=0.3)
   
 
 #ggsave(plot=plot3, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig2rev_nonsmooth.png", width=12, height=8, dpi=600)
