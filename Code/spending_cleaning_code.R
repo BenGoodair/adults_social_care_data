@@ -1630,7 +1630,7 @@ plot1 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
   scale_fill_manual(values=c("#2A6EBB","#B4CFEE" ))+
-  geom_vline(xintercept=c(2014.5), colour="black", size=0.1)
+  geom_vline(xintercept=c(2014.5), colour="black", size=0.2)
 
 
 
@@ -1695,7 +1695,7 @@ plot2 <- plotfun %>% dplyr::filter(Sector=="Total")%>%
         strip.text = element_text(face="bold", size=16),
         title=element_text(face="bold")) +
   scale_fill_manual(values=c("#2A6EBB","#B4CFEE", "#1F5189" ))+
-  geom_vline(xintercept=c(2014.5), colour="black", size=0.1)
+  geom_vline(xintercept=c(2014.5), colour="black", size=0.2)
 
 
 
@@ -1712,7 +1712,7 @@ combined_plot_with_label <- cowplot::ggdraw() +
 
 # Arrange the plots and label vertically
 final_plot <- cowplot::plot_grid(combined_plot_with_label, combined_plot, ncol = 2, rel_widths = c(0.05, 1))
-##ggsave(plot=final_plot, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1rev_nonsmooth_yshare.png", width=12, height=16, dpi=600)
+##ggsave(plot=final_plot, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig1rev_nonsmooth_yshare_low.png", width=12, height=16, dpi=400)
 
 
 
@@ -1955,4 +1955,4 @@ fig2 <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Childr
   
 
 
-#ggsave(plot=fig2, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig3_rev.png", width=15, height=8, dpi=600)
+#ggsave(plot=fig2, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig3_rev_low.png", width=15, height=8, dpi=400)
