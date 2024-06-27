@@ -1954,5 +1954,12 @@ fig2 <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Childr
   scale_color_manual(values=c("#CD202C","#2A6EBB","#F0AB00" ))
   
 
+beds <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/Children's Care Homes Project/Data/Ben Report Dates.csv")%>%
+  dplyr::filter(closed_complete=="Active")%>%
+  dplyr::select(ownership,carehomesbeds)%>%
+  dplyr::group_by(ownership)%>%
+  dplyr::summarise(carehomesbeds= sum(carehomesbeds, na.rm=T))
+
+34508/sum(beds$carehomesbeds)*100
 
 #ggsave(plot=fig2, filename="C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/fig3_rev_low.png", width=15, height=8, dpi=400)
