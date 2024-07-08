@@ -1525,11 +1525,11 @@ fulldata <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc09, a
                 DH_GEOGRAPHY_NAME!="ENGLAND",
                 DH_GEOGRAPHY_NAME!="")
 
-#write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
+#write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/Final_data/expenditure.csv")
 
 
 
-#fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/expenditure.csv")
+fulldata <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/Final_data/expenditure.csv")
 
 
 
@@ -1722,7 +1722,7 @@ yes <- cowplot::plot_grid(plot1, plot2, ncol=1, labels = c("A", "B"))
 
 
 
-gdp <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/GDP_Deflators_Qtrly_National_Accounts_December_2023_update.csv"), skip = 6)[c(2:4)]
+gdp <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/Raw_data/GDP_Deflators_Qtrly_National_Accounts_December_2023_update.csv"), skip = 6)[c(2:4)]
 
 gdp <- gdp %>%
   dplyr::mutate(year = str_replace(Financial.year, "^.{0,5}", ""),

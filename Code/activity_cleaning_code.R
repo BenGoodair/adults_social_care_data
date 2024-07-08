@@ -938,6 +938,7 @@ write.csv(df, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/ad
 
 df <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
 
+mean(df[df$year==2023&df$ActivityProvision=="In House",]$percent_sector, na.rm=T)
 
 plot1 <- df %>%
   ggplot(., aes(x = year, y = percent_sector)) +
