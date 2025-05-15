@@ -38,7 +38,9 @@ asc21 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_soci
 asc20 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2020.csv"))
 asc19 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2019.csv"))
 asc18 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/Copy%20of%20ASCFR%20Data%20File%20(with%20descriptions)_2018.csv"))
-
+lookup17 <- asc18 %>%
+  dplyr::select(DH_GEOGRAPHY_NAME, CASSR)%>%
+  dplyr::distinct(.keep_all  =T)
 
 asc17 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2017/CSV%20ASCFR%20Activity.csv"))
 asc16 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2016/pss-exp-eng-15-16-fin-act.csv"))
@@ -142,9 +144,11 @@ asc18 <- asc18 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
 
 total17 <- asc17 %>% dplyr::filter(GEOGRAPHY_CODE!="", 
                                    AgeBand_KEY==2)%>%
+  left_join(., lookup17%>%
+              dplyr::rename(CASSR_CODE = CASSR))%>%
   dplyr::mutate(ItemValue=as.numeric(ItemValue))%>%
-  dplyr::select(GEOGRAPHY_CODE, SupportSetting_KEY, ItemValue)%>%
-  dplyr::group_by(GEOGRAPHY_CODE, SupportSetting_KEY) %>%
+  dplyr::select(GEOGRAPHY_CODE,DH_GEOGRAPHY_NAME, SupportSetting_KEY, ItemValue)%>%
+  dplyr::group_by(GEOGRAPHY_CODE,DH_GEOGRAPHY_NAME, SupportSetting_KEY) %>%
   dplyr::summarise(ItemValue = sum(ItemValue, na.rm=T))%>%
   dplyr::ungroup()%>%
   dplyr::mutate(ActivityProvision_KEY=1)
@@ -152,8 +156,10 @@ total17 <- asc17 %>% dplyr::filter(GEOGRAPHY_CODE!="",
 
  asc17 <- asc17 %>% dplyr::filter(AgeBand_KEY==2, 
                                   GEOGRAPHY_CODE!="")%>%
+   left_join(., lookup17%>%
+               dplyr::rename(CASSR_CODE = CASSR))%>%
    dplyr::mutate( ItemValue=as.numeric(ItemValue))%>%
-   dplyr::select(GEOGRAPHY_CODE, SupportSetting_KEY, ActivityProvision_KEY, ItemValue)%>%
+   dplyr::select(GEOGRAPHY_CODE,DH_GEOGRAPHY_NAME, SupportSetting_KEY, ActivityProvision_KEY, ItemValue)%>%
    dplyr::bind_rows(., total17)%>%
    dplyr::mutate(ActivityProvision_KEY = ifelse(ActivityProvision_KEY==1,"99",
                                                          ifelse(ActivityProvision_KEY==2,"External",
@@ -164,14 +170,13 @@ total17 <- asc17 %>% dplyr::filter(GEOGRAPHY_CODE!="",
   dplyr::rename(SupportSetting=SupportSetting_KEY,
                 ActivityProvision=ActivityProvision_KEY,
                 ITEMVALUE = ItemValue)%>%
-  dplyr::group_by(GEOGRAPHY_CODE, ActivityProvision, SupportSetting) %>%
+  dplyr::group_by(GEOGRAPHY_CODE,DH_GEOGRAPHY_NAME, ActivityProvision, SupportSetting) %>%
   dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
   dplyr::ungroup()%>%
-  dplyr::group_by(GEOGRAPHY_CODE, SupportSetting) %>%
+  dplyr::group_by(GEOGRAPHY_CODE,DH_GEOGRAPHY_NAME, SupportSetting) %>%
    dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision == "99"]*100) %>%
    dplyr::ungroup()%>%
-  dplyr::mutate(year=2017,
-                DH_GEOGRAPHY_NAME=NA)%>%
+  dplyr::mutate(year=2017)%>%
    dplyr::mutate(SupportSetting = ifelse(is.na(SupportSetting), "", SupportSetting))
   
  
@@ -867,9 +872,9 @@ asc07 <- all_df %>%
     dplyr::ungroup()
   
   
-write.csv(plotfun, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity_keep_all.csv")
+#write.csv(plotfun, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity_keep_all.csv")
   
-sum(plotfun[plotfun$SupportSetting=="Residential"&plotfun$ActivityProvision!="99",]$ITEMVALUE, na.rm=T)  
+#sum(plotfun[plotfun$SupportSetting=="Residential"&plotfun$ActivityProvision!="99",]$ITEMVALUE, na.rm=T)  
 
 plotfun <- rbind( asc01[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
                   asc02[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE", "year")],
@@ -932,6 +937,7 @@ df <- plotfun %>%
   dplyr::filter(!grepl("TOTAL", DH_GEOGRAPHY_NAME),
                 DH_GEOGRAPHY_NAME!="ENGLAND"|year==2017)
 
+write.csv(df, "Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/activity.csv")
 
 
 write.csv(df, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
