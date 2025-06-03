@@ -909,9 +909,9 @@ plotfun <- rbind( asc01[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME
                    dplyr::mutate(year=2022),
                  asc23[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
                    dplyr::mutate(year=2023)
-                 )%>%
-  dplyr::filter(ActivityProvision=="In House",
-                SupportSetting=="Residential")
+                 )#%>%
+  #dplyr::filter(ActivityProvision=="In House",
+   #             SupportSetting=="Residential")
 
 
 df <- plotfun %>%
@@ -936,6 +936,9 @@ df <- plotfun %>%
                   str_trim())%>%
   dplyr::filter(!grepl("TOTAL", DH_GEOGRAPHY_NAME),
                 DH_GEOGRAPHY_NAME!="ENGLAND"|year==2017)
+
+write.csv(df, "Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/activity_keep_all.csv")
+
 
 write.csv(df, "Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/activity.csv")
 
