@@ -1002,6 +1002,8 @@ asc16 <- rbind(sixtot, eightot)
 
 #2017
 
+
+
 asc17 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/2017/CSV%20ASCFR%20Expenditure.csv"))%>%
   dplyr::filter(FinanceType_KEY==3)
 
@@ -1083,7 +1085,12 @@ sixtot <- six %>%
   dplyr::mutate(percent_sector = Expenditure /Expenditure[Sector == "Total"]*100) %>%
   dplyr::ungroup()
 
-asc17 <- rbind(sixtot, eightot)
+asc17 <- rbind(sixtot, eightot)%>%
+  dplyr::rename(CASSR = DH_GEOGRAPHY_NAME)%>%
+  dplyr::left_join(., lookup17 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/Copy%20of%20ASCFR%20Data%20File%20(with%20descriptions)_2018.csv"))%>%
+                     dplyr::select(DH_GEOGRAPHY_NAME, CASSR)%>%
+                     dplyr::distinct(.keep_all  =T))%>%
+  dplyr::select(-CASSR)
 
 
 #2018
@@ -1525,7 +1532,7 @@ fulldata <- rbind(asc01,asc02,asc03, asc04, asc05, asc06, asc07, asc08, asc09, a
                 DH_GEOGRAPHY_NAME!="ENGLAND",
                 DH_GEOGRAPHY_NAME!="")
 
-#write.csv(fulldata, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/Final_data/expenditure.csv")
+write.csv(fulldata, "Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/Final_data/expenditure.csv")
 
 
 
