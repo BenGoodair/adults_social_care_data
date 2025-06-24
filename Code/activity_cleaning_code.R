@@ -32,6 +32,7 @@ options(scipen=999)
 #I didn't have 18-64 resies - which will be broken down by need
 #####BUT I THINK I WANT OLD PEOPLE ONLY PLZ####
 
+asc24 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/refs/heads/main/Raw_data/ASC-FR%20CSV%202023-24%20(Descriptions)%20V2.csv"))
 asc23 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2023.csv"))
 asc22 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2022.csv"))
 asc21 <- read.csv(curl("https://raw.githubusercontent.com/BenGoodair/adults_social_care_data/main/Raw_data/ASC-FR%20Data%20File%20(descriptions)%20v2_2021.csv"))
@@ -69,6 +70,18 @@ asc07 <- read.csv(curl())
 asc06 <- read.csv(curl())
 asc05 <- read.csv(curl())
 
+
+asc24 <- asc24 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
+                                 AgeBand=="65 and Over",
+                                 DimensionGroup=="Activity")%>%
+  dplyr::mutate(ITEMVALUE = as.numeric(ITEMVALUE))%>%
+  dplyr::select(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting ,ITEMVALUE)%>%
+  dplyr::group_by(GEOGRAPHY_CODE, DH_GEOGRAPHY_NAME,ActivityProvision, SupportSetting )%>%
+  dplyr::summarise(ITEMVALUE = sum(ITEMVALUE, na.rm=T))%>%
+  dplyr::ungroup()%>%
+  dplyr::group_by(DH_GEOGRAPHY_NAME, GEOGRAPHY_CODE, SupportSetting) %>%
+  dplyr::mutate(percent_sector = ITEMVALUE /ITEMVALUE[ActivityProvision == "99"]*100) %>%
+  dplyr::ungroup()
 
 asc23 <- asc23 %>% dplyr::filter(GEOGRAPHY_LEVEL=="Local Authority",
                                 AgeBand=="65 and Over",
@@ -908,7 +921,9 @@ plotfun <- rbind( asc01[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME
                  asc22[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
                    dplyr::mutate(year=2022),
                  asc23[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
-                   dplyr::mutate(year=2023)
+                   dplyr::mutate(year=2023),
+                 asc24[c("percent_sector", "SupportSetting", "DH_GEOGRAPHY_NAME", "ActivityProvision","ITEMVALUE")]%>%
+                   dplyr::mutate(year=2024)
                  )#%>%
   #dplyr::filter(ActivityProvision=="In House",
    #             SupportSetting=="Residential")
@@ -940,12 +955,18 @@ df <- plotfun %>%
 write.csv(df, "Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/activity_keep_all.csv")
 
 
-write.csv(df, "Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/activity.csv")
 
 
-write.csv(df, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
 
-df <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
+
+
+
+#write.csv(df, "Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/activity.csv")
+
+
+#write.csv(df, "C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
+
+#df <- read.csv("C:/Users/benjamin.goodair/OneDrive - Nexus365/Documents/GitHub/adults_social_care_data/activity.csv")
 
 mean(df[df$year==2023&df$ActivityProvision=="In House",]$percent_sector, na.rm=T)
 
