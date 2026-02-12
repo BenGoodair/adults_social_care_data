@@ -952,7 +952,11 @@ df <- plotfun %>%
   dplyr::filter(!grepl("TOTAL", DH_GEOGRAPHY_NAME),
                 DH_GEOGRAPHY_NAME!="ENGLAND"|year==2017)
 
-write.csv(df, "Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/activity_keep_all.csv")
+
+
+
+
+write.csv(df, "~/Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/adults_social_care_data/activity_keep_all.csv")
 
 
 
