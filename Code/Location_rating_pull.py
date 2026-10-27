@@ -20,7 +20,7 @@ import ssl
 
 #####LOCATION API#####
 
-api_key = 'f3092d60de7e466ea0f7baad721e7b23'
+api_key = 'XXXXX'
 
 context = ssl._create_unverified_context()
 
